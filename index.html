@@ -496,28 +496,33 @@
     btn.innerHTML = '<span class="spinner"></span> Mengambil...';
 
     try {
-      // Fetch daftar sheet dari Apps Script
-      const url = `${script}?ssId=${ssId}&sheet=__sheets__`;
+      // Simpan dulu ke LS sebelum fetch
+      LS.set('script', script);
+      LS.set('ss', document.getElementById('in-ss').value.trim());
+
+      const url = `${script}?ssId=${encodeURIComponent(ssId)}&sheet=__sheets__`;
       const r = await fetch(url);
-      const d = await r.json();
+      const text = await r.text();
+      let d;
+      try { d = JSON.parse(text); } catch(pe) { showToast('Response tidak valid dari Apps Script.'); return; }
 
       let sheetNames = [];
-      if (d.sheets) {
+      if (d.sheets && d.sheets.length > 0) {
         sheetNames = d.sheets;
-      } else if (d.data) {
-        // Fallback: ambil sheet pertama saja
-        sheetNames = [document.getElementById('in-sheet').value || 'Sheet1'];
       } else if (d.error) {
         showToast('Error: ' + d.error);
+        return;
+      } else {
+        showToast('Tidak ada sheet ditemukan.');
         return;
       }
 
       const sel = document.getElementById('in-sheet');
       sel.innerHTML = sheetNames.map(s => `<option value="${s}">${s}</option>`).join('');
-      document.getElementById('sec-sheet').style.display = '';
-
-      LS.set('script', script);
-      LS.set('ss', document.getElementById('in-ss').value.trim());
+      
+      // Tampilkan section sheet
+      const secSheet = document.getElementById('sec-sheet');
+      secSheet.style.cssText = 'display: block !important';
 
       if (!silent) showToast(sheetNames.length + ' sheet ditemukan.');
       await fetchHeaders(silent);
@@ -547,7 +552,7 @@
 
       renderChips();
       LS.set('sheet', sheet);
-      document.getElementById('sec-cols').style.display = '';
+      document.getElementById('sec-cols').style.cssText = 'display: block !important';
       generateLink();
 
     } catch (e) {
@@ -595,7 +600,7 @@
     // Encode script URL supaya aman di query param
     const viewUrl = `view.html?script=${encodeURIComponent(script)}&ssId=${encodeURIComponent(ssId)}&sheet=${encodeURIComponent(sheet)}&cols=${encodeURIComponent(cols)}`;
     document.getElementById('share-url').textContent = viewUrl;
-    document.getElementById('sec-share').style.display = '';
+    document.getElementById('sec-share').style.cssText = 'display: block !important';
   }
 
   function copyLink() {
