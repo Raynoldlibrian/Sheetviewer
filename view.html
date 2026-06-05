@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SheetView</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1a2744;
+      --navy2: #243358;
+      --navy3: #2e4070;
+      --gold: #c9a84c;
+      --gold2: #e8c96a;
+      --bg: #f0f2f7;
+      --surface: #ffffff;
+      --surface2: #f7f8fb;
+      --border: #e2e6ef;
+      --border2: #cdd3e0;
+      --text: #1a2744;
+      --muted: #7a85a0;
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Topbar */
+    .topbar {
+      background: var(--navy);
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 12px rgba(26,39,68,.18);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 15px;
+      font-weight: 400;
+    }
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: normal;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .topbar-center {
+      flex: 1;
+      padding: 0 1rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .search-wrap {
+      position: relative;
+    }
+    .search-wrap i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,.4);
+      font-size: 15px;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: 7px 12px 7px 34px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: var(--radius);
+      color: #fff;
+      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .search-input::placeholder { color: rgba(255,255,255,.4); }
+    .search-input:focus { outline: none; background: rgba(255,255,255,.15); }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .count-badge {
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.7);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.15);
+      white-space: nowrap;
+    }
+    .btn-refresh {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.8);
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background .15s;
+    }
+    .btn-refresh:hover { background: rgba(255,255,255,.18); }
+
+    /* Main */
+    .main {
+      padding: 1.5rem 1rem 3rem;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Sheet info bar */
+    .info-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .info-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 20px;
+      color: var(--navy);
+    }
+    .info-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Card grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(26,39,68,.05);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26,39,68,.09);
+    }
+    .card-head {
+      background: var(--navy);
+      padding: 13px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-head::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 60px; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.04));
+      pointer-events: none;
+    }
+    .card-head-no {
+      font-size: 10px;
+      color: rgba(255,255,255,.35);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 3px;
+    }
+    .card-head-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+    }
+    .card-body { padding: 13px 16px; }
+    .row-item {
+      margin-bottom: 9px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid var(--border);
+    }
+    .row-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .row-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 2px;
+    }
+    .row-value {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .row-value.date-val {
+      color: var(--navy3);
+      font-weight: 500;
+    }
+
+    /* States */
+    .state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--muted);
+    }
+    .state i { font-size: 36px; display: block; margin-bottom: 12px; opacity: .3; }
+    .state p { font-size: 14px; line-height: 1.7; }
+
+    /* Skeleton */
+    .skel {
+      background: linear-gradient(90deg, var(--border) 25%, var(--surface2) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    .skel-card { height: 160px; border-radius: var(--radius-lg); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 11.5px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+      .topbar-center { display: none; }
+      .mobile-search {
+        display: block;
+        padding: .75rem 1rem 0;
+      }
+      .mobile-search .search-wrap i { color: var(--muted); }
+      .mobile-search .search-input {
+        background: var(--surface2);
+        border-color: var(--border);
+        color: var(--text);
+      }
+      .mobile-search .search-input::placeholder { color: var(--muted); }
+    }
+    @media (min-width: 601px) {
+      .mobile-search { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">S</div>
+    SheetView
+  </div>
+  <div class="topbar-center">
+    <div class="search-wrap">
+      <i class="ti ti-search"></i>
+      <input class="search-input" id="search-desktop" type="text" placeholder="Cari data..." oninput="filterCards()" />
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="count-badge" id="count-badge">—</span>
+    <button class="btn-refresh" onclick="loadData()">
+      <i class="ti ti-refresh"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search -->
+<div class="mobile-search">
+  <div class="search-wrap">
+    <i class="ti ti-search"></i>
+    <input class="search-input" id="search-mobile" type="text" placeholder="Cari data..." oninput="filterCards()" />
+  </div>
+</div>
+
+<div class="main">
+  <div class="info-bar">
+    <span class="info-title" id="info-title">Memuat...</span>
+    <span class="info-sub" id="info-sub"></span>
+  </div>
+  <div class="card-grid" id="card-grid">
+    <!-- Skeleton -->
+    <div class="skel skel-card"></div>
+    <div class="skel skel-card"></div>
+    <div class="skel skel-card"></div>
+    <div class="skel skel-card"></div>
+    <div class="skel skel-card"></div>
+    <div class="skel skel-card"></div>
+  </div>
+</div>
+
+<div class="footer">
+  Data diambil langsung dari Google Sheets · SheetView
+</div>
+
+<script>
+  // Ambil parameter dari URL
+  const params = new URLSearchParams(window.location.search);
+  const SCRIPT  = params.get('script')  || '';
+  const SS_ID   = params.get('ssId')    || '';
+  const SHEET   = params.get('sheet')   || 'Sheet1';
+  const COLS    = params.get('cols')    ? params.get('cols').split(',').map(Number) : null;
+
+  let allRows = [], headers = [], visibleCols = [];
+
+  // Format tanggal ISO → "Senin, 19 Januari 2026"
+  function formatDate(val) {
+    if (!val) return val;
+    const str = String(val).trim();
+    // Cek format ISO: 2026-01-18T17:00:00.000Z
+    const iso = str.match(/^(\d{4})-(\d{2})-(\d{2})T/);
+    if (iso) {
+      const d = new Date(str);
+      if (!isNaN(d)) {
+        return d.toLocaleDateString('id-ID', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+          timeZone: 'Asia/Jakarta'
+        });
+      }
+    }
+    // Cek format M/D/YYYY atau MM/DD/YYYY
+    const mdy = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (mdy) {
+      const d = new Date(parseInt(mdy[3]), parseInt(mdy[1])-1, parseInt(mdy[2]));
+      if (!isNaN(d)) {
+        return d.toLocaleDateString('id-ID', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+      }
+    }
+    return str;
+  }
+
+  function isDateLike(headers, idx, sampleVal) {
+    const h = (headers[idx] || '').toLowerCase();
+    if (h.includes('tanggal') || h.includes('date') || h.includes('tgl')) return true;
+    if (String(sampleVal).match(/^\d{4}-\d{2}-\d{2}T/)) return true;
+    return false;
+  }
+
+  async function loadData() {
+    const grid = document.getElementById('card-grid');
+
+    if (!SCRIPT || !SS_ID) {
+      grid.innerHTML = `<div class="state">
+        <i class="ti ti-alert-circle"></i>
+        <p>Parameter tidak lengkap.<br>Gunakan link yang dibuat dari halaman Setelan.</p>
+      </div>`;
+      document.getElementById('info-title').textContent = 'Error';
+      return;
+    }
+
+    // Show skeleton
+    grid.innerHTML = [1,2,3,4,5,6].map(() => '<div class="skel skel-card"></div>').join('');
+    document.getElementById('info-title').textContent = 'Memuat data...';
+    document.getElementById('count-badge').textContent = '—';
+
+    try {
+      const url = `${SCRIPT}?ssId=${encodeURIComponent(SS_ID)}&sheet=${encodeURIComponent(SHEET)}`;
+      const r = await fetch(url);
+      const d = await r.json();
+
+      if (d.error) {
+        grid.innerHTML = `<div class="state"><i class="ti ti-x"></i><p>Error: ${d.error}</p></div>`;
+        return;
+      }
+
+      const rows = d.data || [];
+      if (rows.length < 2) {
+        grid.innerHTML = '<div class="state"><i class="ti ti-table-off"></i><p>Sheet kosong atau belum ada data.</p></div>';
+        return;
+      }
+
+      headers = rows[0];
+      // Filter baris kosong
+      allRows = rows.slice(1).filter(row => row.some(c => String(c).trim() !== ''));
+
+      // Tentukan kolom yang ditampilkan
+      if (COLS && COLS.length > 0) {
+        visibleCols = COLS.filter(i => i < headers.length);
+      } else {
+        visibleCols = headers.map((_, i) => i);
+      }
+
+      document.getElementById('info-title').textContent = SHEET;
+      document.getElementById('info-sub').textContent = allRows.length + ' data';
+      document.getElementById('count-badge').textContent = allRows.length + ' baris';
+
+      renderCards(allRows);
+
+    } catch (e) {
+      grid.innerHTML = `<div class="state"><i class="ti ti-wifi-off"></i><p>Gagal memuat data.<br>${e.message}</p></div>`;
+    }
+  }
+
+  function renderCards(rows) {
+    const grid = document.getElementById('card-grid');
+    if (!rows.length) {
+      grid.innerHTML = '<div class="state"><i class="ti ti-search-off"></i><p>Tidak ada hasil yang cocok.</p></div>';
+      return;
+    }
+
+    const cols = visibleCols.length ? visibleCols : headers.map((_, i) => i);
+
+    grid.innerHTML = rows.map((row, ri) => {
+      const titleIdx = cols[0];
+      const rawTitle = row[titleIdx] !== undefined ? String(row[titleIdx]).trim() : '';
+      const title = isDateLike(headers, titleIdx, rawTitle) ? formatDate(rawTitle) : (rawTitle || `Data ${ri + 1}`);
+
+      let body = '';
+      for (let k = 1; k < cols.length; k++) {
+        const i = cols[k];
+        const raw = row[i] !== undefined ? String(row[i]).trim() : '';
+        if (raw === '') continue;
+        const isDate = isDateLike(headers, i, raw);
+        const displayVal = isDate ? formatDate(raw) : raw;
+        body += `<div class="row-item">
+          <div class="row-label">${headers[i] || 'Kolom ' + (i+1)}</div>
+          <div class="row-value ${isDate ? 'date-val' : ''}">${displayVal}</div>
+        </div>`;
+      }
+
+      return `<div class="card">
+        <div class="card-head">
+          <div class="card-head-no">${headers[titleIdx] || 'Kolom 1'} · #${ri + 1}</div>
+          <div class="card-head-title">${title}</div>
+        </div>
+        <div class="card-body">${body || '<span style="font-size:12px;color:var(--muted)">—</span>'}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterCards() {
+    const q = (document.getElementById('search-desktop').value || document.getElementById('search-mobile').value).toLowerCase();
+    // Sync kedua input
+    document.getElementById('search-desktop').value = q;
+    document.getElementById('search-mobile').value = q;
+    if (!q) { renderCards(allRows); return; }
+    const filtered = allRows.filter(row => row.some(c => String(c).toLowerCase().includes(q)));
+    renderCards(filtered);
+  }
+
+  // Jalankan saat halaman load
+  window.onload = loadData;
+</script>
+
+</body>
+</html>
