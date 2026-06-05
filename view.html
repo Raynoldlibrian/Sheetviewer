@@ -1,482 +1,320 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SheetView</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --navy: #1a2744;
-      --navy2: #243358;
-      --navy3: #2e4070;
-      --gold: #c9a84c;
-      --gold2: #e8c96a;
-      --bg: #f0f2f7;
-      --surface: #ffffff;
-      --surface2: #f7f8fb;
-      --border: #e2e6ef;
-      --border2: #cdd3e0;
-      --text: #1a2744;
-      --muted: #7a85a0;
-      --radius: 10px;
-      --radius-lg: 16px;
-    }
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1e2d4a;--navy2:#2c4068;--gold:#c9a84c;--s:var(--color-background-primary);--s2:var(--color-background-secondary);--s3:var(--color-background-tertiary);--t:var(--color-text-primary);--m:var(--color-text-secondary);--b:var(--color-border-tertiary);--b2:var(--color-border-secondary);--r:var(--border-radius-md);--rl:var(--border-radius-lg)}
+body{font-family:var(--font-sans);background:var(--s3);color:var(--t);min-height:520px}
+.topbar{background:var(--navy);color:#fff;padding:0 1.25rem;height:50px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.brand-dot{width:7px;height:7px;background:var(--gold);border-radius:50%}
+.nav{display:flex;gap:3px}
+.nb{background:transparent;border:none;color:rgba(255,255,255,.6);padding:6px 11px;border-radius:6px;cursor:pointer;font-size:12.5px;display:flex;align-items:center;gap:5px;font-family:var(--font-sans);transition:all .15s}
+.nb:hover,.nb.on{background:rgba(255,255,255,.12);color:#fff}
+.nb.on{color:#e8c96a}
+.page{display:none;padding:1.25rem}
+.page.on{display:block}
 
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
+/* settings */
+.sc{background:var(--s);border:0.5px solid var(--b);border-radius:var(--rl);padding:1.25rem;max-width:560px;margin:0 auto}
+.sec-title{font-size:13px;font-weight:500;color:var(--m);text-transform:uppercase;letter-spacing:.6px;margin-bottom:.9rem;display:flex;align-items:center;gap:6px}
+.fl{margin-bottom:1rem}
+.fl-label{font-size:11.5px;font-weight:500;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block}
+.fi{width:100%;padding:8px 11px;border:0.5px solid var(--b);border-radius:var(--r);background:var(--s2);color:var(--t);font-size:13.5px;font-family:var(--font-sans)}
+.fi:focus{outline:none;border-color:var(--navy2)}
+.hint{font-size:11px;color:var(--m);margin-top:4px;line-height:1.5}
+.divider{border:none;border-top:0.5px solid var(--b);margin:1.1rem 0}
+.btn-primary{background:var(--navy);color:#fff;border:none;padding:9px 18px;border-radius:var(--r);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:var(--font-sans);transition:background .15s}
+.btn-primary:hover{background:var(--navy2)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-sec{background:var(--s2);color:var(--t);border:0.5px solid var(--b);padding:8px 14px;border-radius:var(--r);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans)}
+.btn-sec:hover{border-color:var(--b2)}
 
-    /* Topbar */
-    .topbar {
-      background: var(--navy);
-      height: 54px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1.5rem;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 2px 12px rgba(26,39,68,.18);
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 15px;
-      font-weight: 400;
-    }
-    .brand-icon {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-style: normal;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--navy);
-    }
-    .topbar-center {
-      flex: 1;
-      padding: 0 1rem;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    .search-wrap {
-      position: relative;
-    }
-    .search-wrap i {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(255,255,255,.4);
-      font-size: 15px;
-      pointer-events: none;
-    }
-    .search-input {
-      width: 100%;
-      padding: 7px 12px 7px 34px;
-      background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: var(--radius);
-      color: #fff;
-      font-size: 13px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .search-input::placeholder { color: rgba(255,255,255,.4); }
-    .search-input:focus { outline: none; background: rgba(255,255,255,.15); }
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .count-badge {
-      background: rgba(255,255,255,.1);
-      color: rgba(255,255,255,.7);
-      font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,.15);
-      white-space: nowrap;
-    }
-    .btn-refresh {
-      background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.15);
-      color: rgba(255,255,255,.8);
-      padding: 6px 10px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      transition: background .15s;
-    }
-    .btn-refresh:hover { background: rgba(255,255,255,.18); }
+/* sheet selector */
+.sheet-row{display:flex;gap:8px;align-items:flex-end}
+.sheet-row .fi{flex:1}
+.select-wrap{position:relative}
+.select-wrap select.fi{padding-right:28px;appearance:none;cursor:pointer}
+.select-wrap::after{content:'';position:absolute;right:10px;top:50%;transform:translateY(-50%);border:4px solid transparent;border-top:5px solid var(--m);pointer-events:none}
 
-    /* Main */
-    .main {
-      padding: 1.5rem 1rem 3rem;
-      max-width: 1280px;
-      margin: 0 auto;
-    }
+/* kolom checklist */
+.col-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.col-chip{display:flex;align-items:center;gap:5px;padding:5px 10px;border:0.5px solid var(--b);border-radius:20px;cursor:pointer;font-size:12px;background:var(--s2);color:var(--t);user-select:none;transition:all .15s}
+.col-chip:hover{border-color:var(--b2)}
+.col-chip.checked{background:var(--navy);color:#fff;border-color:var(--navy)}
+.col-chip input{display:none}
 
-    /* Sheet info bar */
-    .info-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 1.25rem;
-      flex-wrap: wrap;
-    }
-    .info-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: 20px;
-      color: var(--navy);
-    }
-    .info-sub {
-      font-size: 12px;
-      color: var(--muted);
-    }
+/* cards page */
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:1.1rem;flex-wrap:wrap}
+.tbar-title{font-size:14px;font-weight:500;flex:1;min-width:100px}
+.sw{position:relative}
+.sw .ti{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--m);pointer-events:none}
+.si{padding:7px 10px 7px 30px;border:0.5px solid var(--b);border-radius:var(--r);background:var(--s2);color:var(--t);font-size:13px;font-family:var(--font-sans);width:180px}
+.si:focus{outline:none}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{background:var(--s);border:0.5px solid var(--b);border-radius:var(--rl);overflow:hidden;transition:border-color .15s}
+.card:hover{border-color:rgba(30,45,74,.3)}
+.ch{background:var(--navy);padding:11px 14px;color:#fff}
+.ch-title{font-size:13.5px;font-weight:500;line-height:1.4}
+.ch-sub{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.cb{padding:11px 14px}
+.ri{margin-bottom:8px;padding-bottom:8px;border-bottom:0.5px solid var(--b)}
+.ri:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.rl{font-size:10px;font-weight:500;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.rv{font-size:13px;line-height:1.45;word-break:break-word}
 
-    /* Card grid */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 14px;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(26,39,68,.05);
-      transition: transform .15s, box-shadow .15s;
-    }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(26,39,68,.09);
-    }
-    .card-head {
-      background: var(--navy);
-      padding: 13px 16px;
-      position: relative;
-      overflow: hidden;
-    }
-    .card-head::after {
-      content: '';
-      position: absolute;
-      top: 0; right: 0;
-      width: 60px; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.04));
-      pointer-events: none;
-    }
-    .card-head-no {
-      font-size: 10px;
-      color: rgba(255,255,255,.35);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      margin-bottom: 3px;
-    }
-    .card-head-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      line-height: 1.4;
-    }
-    .card-body { padding: 13px 16px; }
-    .row-item {
-      margin-bottom: 9px;
-      padding-bottom: 9px;
-      border-bottom: 1px solid var(--border);
-    }
-    .row-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .row-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      margin-bottom: 2px;
-    }
-    .row-value {
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.5;
-      word-break: break-word;
-    }
-    .row-value.date-val {
-      color: var(--navy3);
-      font-weight: 500;
-    }
-
-    /* States */
-    .state {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 4rem 1rem;
-      color: var(--muted);
-    }
-    .state i { font-size: 36px; display: block; margin-bottom: 12px; opacity: .3; }
-    .state p { font-size: 14px; line-height: 1.7; }
-
-    /* Skeleton */
-    .skel {
-      background: linear-gradient(90deg, var(--border) 25%, var(--surface2) 50%, var(--border) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.2s infinite;
-      border-radius: 6px;
-    }
-    @keyframes shimmer { to { background-position: -200% 0; } }
-    .skel-card { height: 160px; border-radius: var(--radius-lg); }
-
-    /* Footer */
-    .footer {
-      text-align: center;
-      padding: 1.5rem;
-      font-size: 11.5px;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-      margin-top: 2rem;
-    }
-
-    @media (max-width: 600px) {
-      .topbar-center { display: none; }
-      .mobile-search {
-        display: block;
-        padding: .75rem 1rem 0;
-      }
-      .mobile-search .search-wrap i { color: var(--muted); }
-      .mobile-search .search-input {
-        background: var(--surface2);
-        border-color: var(--border);
-        color: var(--text);
-      }
-      .mobile-search .search-input::placeholder { color: var(--muted); }
-    }
-    @media (min-width: 601px) {
-      .mobile-search { display: none; }
-    }
-  </style>
-</head>
-<body>
+/* states */
+.sbox{text-align:center;padding:2.5rem 1rem;color:var(--m)}
+.sbox .ti{font-size:28px;display:block;margin-bottom:10px;opacity:.35}
+.sbox p{font-size:13px;line-height:1.6}
+.al{color:var(--navy2);cursor:pointer;text-decoration:underline}
+.toast{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:9px 16px;border-radius:var(--r);font-size:12.5px;display:none;z-index:99;white-space:nowrap}
+.step-badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:var(--navy);color:#fff;border-radius:50%;font-size:11px;font-weight:500;margin-right:6px;flex-shrink:0}
+.step-row{display:flex;align-items:center;margin-bottom:.85rem}
+</style>
 
 <div class="topbar">
-  <div class="brand">
-    <div class="brand-icon">S</div>
-    SheetView
+  <div class="brand"><div class="brand-dot"></div>SheetView</div>
+  <div class="nav">
+    <button class="nb" id="nb-cards" onclick="showPage('cards')"><i class="ti ti-layout-cards" aria-hidden="true"></i> Data</button>
+    <button class="nb on" id="nb-settings" onclick="showPage('settings')"><i class="ti ti-settings" aria-hidden="true"></i> Setelan</button>
   </div>
-  <div class="topbar-center">
-    <div class="search-wrap">
-      <i class="ti ti-search"></i>
-      <input class="search-input" id="search-desktop" type="text" placeholder="Cari data..." oninput="filterCards()" />
+</div>
+
+<div id="page-settings" class="page on">
+  <div class="sc">
+
+    <div class="step-row">
+      <span class="step-badge">1</span>
+      <span class="sec-title" style="margin:0"><i class="ti ti-key" aria-hidden="true"></i> API Key</span>
     </div>
-  </div>
-  <div class="topbar-right">
-    <span class="count-badge" id="count-badge">—</span>
-    <button class="btn-refresh" onclick="loadData()">
-      <i class="ti ti-refresh"></i>
-    </button>
+    <div class="fl">
+      <label class="fl-label">Google Sheets API Key</label>
+      <input class="fi" id="in-key" type="password" placeholder="AIza..." />
+      <p class="hint">Satu API Key berlaku untuk semua spreadsheet publik.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="step-row">
+      <span class="step-badge">2</span>
+      <span class="sec-title" style="margin:0"><i class="ti ti-table" aria-hidden="true"></i> Spreadsheet</span>
+    </div>
+    <div class="fl">
+      <label class="fl-label">URL atau ID Spreadsheet</label>
+      <div class="sheet-row">
+        <input class="fi" id="in-ss" type="text" placeholder="https://docs.google.com/spreadsheets/d/..." />
+        <button class="btn-sec" onclick="fetchSheets()" id="btn-fetch">
+          <i class="ti ti-refresh" aria-hidden="true"></i> Ambil sheet
+        </button>
+      </div>
+      <p class="hint">Spreadsheet harus di-share "Anyone with the link can view".</p>
+    </div>
+
+    <div class="fl" id="fl-sheet" style="display:none">
+      <label class="fl-label">Pilih sheet</label>
+      <div class="select-wrap">
+        <select class="fi" id="in-sheet" onchange="fetchHeaders()"></select>
+      </div>
+    </div>
+
+    <div class="fl" id="fl-cols" style="display:none">
+      <label class="fl-label">Tampilkan kolom</label>
+      <p class="hint" style="margin-bottom:6px">Klik untuk centang/hapus centang. Kolom pertama selalu jadi judul kartu.</p>
+      <div class="col-grid" id="col-grid"></div>
+    </div>
+
+    <div class="divider" id="div-save" style="display:none"></div>
+    <div id="wrap-save" style="display:none;gap:10px;align-items:center">
+      <button class="btn-primary" onclick="saveAndLoad()">
+        <i class="ti ti-device-floppy" aria-hidden="true"></i> Simpan & tampilkan
+      </button>
+    </div>
+
   </div>
 </div>
 
-<!-- Mobile search -->
-<div class="mobile-search">
-  <div class="search-wrap">
-    <i class="ti ti-search"></i>
-    <input class="search-input" id="search-mobile" type="text" placeholder="Cari data..." oninput="filterCards()" />
+<div id="page-cards" class="page">
+  <div class="toolbar">
+    <span class="tbar-title" id="tbar-title">Data</span>
+    <div class="sw">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input class="si" id="si" type="text" placeholder="Cari..." oninput="filterCards()" />
+    </div>
+    <button class="btn-sec" onclick="loadData()"><i class="ti ti-refresh" aria-hidden="true"></i> Muat ulang</button>
   </div>
+  <div id="card-grid" class="card-grid"></div>
 </div>
 
-<div class="main">
-  <div class="info-bar">
-    <span class="info-title" id="info-title">Memuat...</span>
-    <span class="info-sub" id="info-sub"></span>
-  </div>
-  <div class="card-grid" id="card-grid">
-    <!-- Skeleton -->
-    <div class="skel skel-card"></div>
-    <div class="skel skel-card"></div>
-    <div class="skel skel-card"></div>
-    <div class="skel skel-card"></div>
-    <div class="skel skel-card"></div>
-    <div class="skel skel-card"></div>
-  </div>
-</div>
-
-<div class="footer">
-  Data diambil langsung dari Google Sheets · SheetView
-</div>
+<div id="toast" class="toast"></div>
 
 <script>
-  // Ambil parameter dari URL
-  const params = new URLSearchParams(window.location.search);
-  const SCRIPT  = params.get('script')  || '';
-  const SS_ID   = params.get('ssId')    || '';
-  const SHEET   = params.get('sheet')   || 'Sheet1';
-  const COLS    = params.get('cols')    ? params.get('cols').split(',').map(Number) : null;
+const LS={get:k=>localStorage.getItem('sv_'+k)||'',set:(k,v)=>localStorage.setItem('sv_'+k,v)};
+let allRows=[],headers=[],visibleCols=[];
 
-  let allRows = [], headers = [], visibleCols = [];
+function extractId(s){
+  s=s.trim();
+  const m=s.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  return m?m[1]:s;
+}
 
-  // Format tanggal ISO → "Senin, 19 Januari 2026"
-  function formatDate(val) {
-    if (!val) return val;
-    const str = String(val).trim();
-    // Cek format ISO: 2026-01-18T17:00:00.000Z
-    const iso = str.match(/^(\d{4})-(\d{2})-(\d{2})T/);
-    if (iso) {
-      const d = new Date(str);
-      if (!isNaN(d)) {
-        return d.toLocaleDateString('id-ID', {
-          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-          timeZone: 'Asia/Jakarta'
-        });
+window.onload=function(){
+  document.getElementById('in-key').value=LS.get('key');
+  document.getElementById('in-ss').value=LS.get('ss');
+  const ssId=extractId(LS.get('ss'));
+  if(ssId&&LS.get('key')&&LS.get('sheet')){
+    restoreSheetSelect();
+  }
+};
+
+async function restoreSheetSelect(){
+  await fetchSheets(true);
+  const saved=LS.get('sheet');
+  const sel=document.getElementById('in-sheet');
+  if(saved)sel.value=saved;
+  await fetchHeaders(true);
+  const savedCols=LS.get('cols');
+  if(savedCols){
+    visibleCols=JSON.parse(savedCols);
+    renderColChips(headers,visibleCols);
+  }
+  document.getElementById('div-save').style.display='';
+  document.getElementById('wrap-save').style.display='flex';
+  showPage('cards');
+  loadData();
+}
+
+async function fetchSheets(silent=false){
+  const key=document.getElementById('in-key').value.trim();
+  const ssId=extractId(document.getElementById('in-ss').value);
+  if(!key||!ssId){showToast('Isi API Key dan URL/ID spreadsheet dulu.');return;}
+  const btn=document.getElementById('btn-fetch');
+  btn.disabled=true;
+  btn.innerHTML='<i class="ti ti-loader-2"></i> Mengambil...';
+  try{
+    const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}?fields=sheets.properties.title&key=${key}`);
+    const d=await r.json();
+    if(d.error){showToast('Error: '+d.error.message);return;}
+    const sheets=d.sheets.map(s=>s.properties.title);
+    const sel=document.getElementById('in-sheet');
+    sel.innerHTML=sheets.map(s=>`<option value="${s}">${s}</option>`).join('');
+    document.getElementById('fl-sheet').style.display='';
+    if(!silent)showToast(sheets.length+' sheet ditemukan.');
+    LS.set('ss',document.getElementById('in-ss').value.trim());
+    LS.set('key',key);
+    await fetchHeaders(silent);
+  }catch(e){showToast('Gagal: '+e.message);}
+  btn.disabled=false;
+  btn.innerHTML='<i class="ti ti-refresh"></i> Ambil sheet';
+}
+
+async function fetchHeaders(silent=false){
+  const key=LS.get('key')||document.getElementById('in-key').value.trim();
+  const ssId=extractId(LS.get('ss')||document.getElementById('in-ss').value);
+  const sheet=document.getElementById('in-sheet').value;
+  if(!key||!ssId||!sheet)return;
+  try{
+    const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${encodeURIComponent(sheet)}!1:1?key=${key}`);
+    const d=await r.json();
+    if(d.error){showToast('Error: '+d.error.message);return;}
+    headers=(d.values&&d.values[0])||[];
+    visibleCols=headers.map((_,i)=>i);
+    renderColChips(headers,visibleCols);
+    document.getElementById('fl-cols').style.display='';
+    document.getElementById('div-save').style.display='';
+    document.getElementById('wrap-save').style.display='flex';
+    LS.set('sheet',sheet);
+  }catch(e){if(!silent)showToast('Gagal ambil header: '+e.message);}
+}
+
+function renderColChips(hdrs,checked){
+  const grid=document.getElementById('col-grid');
+  grid.innerHTML=hdrs.map((h,i)=>{
+    const isChecked=checked.includes(i);
+    const isFirst=i===0;
+    return `<label class="col-chip ${isChecked?'checked':''}" data-i="${i}">
+      <input type="checkbox" ${isChecked?'checked':''} ${isFirst?'disabled':''} onchange="toggleCol(${i},this)" />
+      ${isFirst?'<i class="ti ti-crown" style="font-size:11px" aria-hidden="true"></i>':''} ${h||'Kolom '+(i+1)}
+    </label>`;
+  }).join('');
+}
+
+function toggleCol(i,cb){
+  const chip=cb.closest('.col-chip');
+  if(cb.checked){if(!visibleCols.includes(i))visibleCols.push(i);chip.classList.add('checked');}
+  else{visibleCols=visibleCols.filter(c=>c!==i);chip.classList.remove('checked');}
+  visibleCols.sort((a,b)=>a-b);
+}
+
+function saveAndLoad(){
+  LS.set('key',document.getElementById('in-key').value.trim());
+  LS.set('ss',document.getElementById('in-ss').value.trim());
+  LS.set('sheet',document.getElementById('in-sheet').value);
+  LS.set('cols',JSON.stringify(visibleCols));
+  showPage('cards');
+  loadData();
+}
+
+async function loadData(){
+  const grid=document.getElementById('card-grid');
+  grid.innerHTML='<div class="sbox"><i class="ti ti-loader-2"></i><p>Memuat data...</p></div>';
+  const key=LS.get('key');
+  const ssId=extractId(LS.get('ss'));
+  const sheet=LS.get('sheet');
+  if(!key||!ssId||!sheet){
+    grid.innerHTML=`<div class="sbox"><i class="ti ti-settings"></i><p>Belum ada setelan.<br><span class="al" onclick="showPage('settings')">Buka Setelan</span> dulu.</p></div>`;
+    return;
+  }
+  const savedCols=LS.get('cols');
+  if(savedCols)visibleCols=JSON.parse(savedCols);
+  try{
+    const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${encodeURIComponent(sheet)}?key=${key}`);
+    const d=await r.json();
+    if(d.error){grid.innerHTML=`<div class="sbox"><i class="ti ti-x"></i><p>Error: ${d.error.message}</p></div>`;return;}
+    const rows=d.values||[];
+    if(rows.length<2){grid.innerHTML='<div class="sbox"><i class="ti ti-table-off"></i><p>Sheet kosong.</p></div>';return;}
+    headers=rows[0];
+    allRows=rows.slice(1).filter(row=>row.some(c=>String(c).trim()!==''));
+    document.getElementById('tbar-title').innerHTML=`${sheet} <span style="font-size:12px;color:var(--m);font-weight:400">(${allRows.length} baris)</span>`;
+    renderCards(allRows);
+    showToast(allRows.length+' baris dimuat.');
+  }catch(e){grid.innerHTML=`<div class="sbox"><i class="ti ti-wifi-off"></i><p>Gagal: ${e.message}</p></div>`;}
+}
+
+function renderCards(rows){
+  const grid=document.getElementById('card-grid');
+  const cols=visibleCols.length?visibleCols:headers.map((_,i)=>i);
+  if(!rows.length){grid.innerHTML='<div class="sbox"><i class="ti ti-search-off"></i><p>Tidak ada hasil.</p></div>';return;}
+  grid.innerHTML=rows.map((row,ri)=>{
+    const titleIdx=cols[0];
+    const title=row[titleIdx]||`Baris ${ri+1}`;
+    const sub=headers[titleIdx]||'';
+    let body='';
+    for(let k=1;k<cols.length;k++){
+      const i=cols[k];
+      const val=row[i]!==undefined?String(row[i]).trim():'';
+      if(val!==''){
+        body+=`<div class="ri"><div class="rl">${headers[i]||'Kolom '+(i+1)}</div><div class="rv">${val}</div></div>`;
       }
     }
-    // Cek format M/D/YYYY atau MM/DD/YYYY
-    const mdy = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-    if (mdy) {
-      const d = new Date(parseInt(mdy[3]), parseInt(mdy[1])-1, parseInt(mdy[2]));
-      if (!isNaN(d)) {
-        return d.toLocaleDateString('id-ID', {
-          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-        });
-      }
-    }
-    return str;
-  }
+    return `<div class="card"><div class="ch"><div class="ch-title">${title}</div><div class="ch-sub">${sub}</div></div><div class="cb">${body||'<span style="font-size:12px;color:var(--m)">—</span>'}</div></div>`;
+  }).join('');
+}
 
-  function isDateLike(headers, idx, sampleVal) {
-    const h = (headers[idx] || '').toLowerCase();
-    if (h.includes('tanggal') || h.includes('date') || h.includes('tgl')) return true;
-    if (String(sampleVal).match(/^\d{4}-\d{2}-\d{2}T/)) return true;
-    return false;
-  }
+function filterCards(){
+  const q=document.getElementById('si').value.toLowerCase();
+  if(!q){renderCards(allRows);return;}
+  renderCards(allRows.filter(r=>r.some(c=>String(c).toLowerCase().includes(q))));
+}
 
-  async function loadData() {
-    const grid = document.getElementById('card-grid');
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(el=>el.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.getElementById('nb-'+p).classList.add('on');
+}
 
-    if (!SCRIPT || !SS_ID) {
-      grid.innerHTML = `<div class="state">
-        <i class="ti ti-alert-circle"></i>
-        <p>Parameter tidak lengkap.<br>Gunakan link yang dibuat dari halaman Setelan.</p>
-      </div>`;
-      document.getElementById('info-title').textContent = 'Error';
-      return;
-    }
-
-    // Show skeleton
-    grid.innerHTML = [1,2,3,4,5,6].map(() => '<div class="skel skel-card"></div>').join('');
-    document.getElementById('info-title').textContent = 'Memuat data...';
-    document.getElementById('count-badge').textContent = '—';
-
-    try {
-      const url = `${SCRIPT}?ssId=${encodeURIComponent(SS_ID)}&sheet=${encodeURIComponent(SHEET)}`;
-      const r = await fetch(url);
-      const d = await r.json();
-
-      if (d.error) {
-        grid.innerHTML = `<div class="state"><i class="ti ti-x"></i><p>Error: ${d.error}</p></div>`;
-        return;
-      }
-
-      const rows = d.data || [];
-      if (rows.length < 2) {
-        grid.innerHTML = '<div class="state"><i class="ti ti-table-off"></i><p>Sheet kosong atau belum ada data.</p></div>';
-        return;
-      }
-
-      headers = rows[0];
-      // Filter baris kosong
-      allRows = rows.slice(1).filter(row => row.some(c => String(c).trim() !== ''));
-
-      // Tentukan kolom yang ditampilkan
-      if (COLS && COLS.length > 0) {
-        visibleCols = COLS.filter(i => i < headers.length);
-      } else {
-        visibleCols = headers.map((_, i) => i);
-      }
-
-      document.getElementById('info-title').textContent = SHEET;
-      document.getElementById('info-sub').textContent = allRows.length + ' data';
-      document.getElementById('count-badge').textContent = allRows.length + ' baris';
-
-      renderCards(allRows);
-
-    } catch (e) {
-      grid.innerHTML = `<div class="state"><i class="ti ti-wifi-off"></i><p>Gagal memuat data.<br>${e.message}</p></div>`;
-    }
-  }
-
-  function renderCards(rows) {
-    const grid = document.getElementById('card-grid');
-    if (!rows.length) {
-      grid.innerHTML = '<div class="state"><i class="ti ti-search-off"></i><p>Tidak ada hasil yang cocok.</p></div>';
-      return;
-    }
-
-    const cols = visibleCols.length ? visibleCols : headers.map((_, i) => i);
-
-    grid.innerHTML = rows.map((row, ri) => {
-      const titleIdx = cols[0];
-      const rawTitle = row[titleIdx] !== undefined ? String(row[titleIdx]).trim() : '';
-      const title = isDateLike(headers, titleIdx, rawTitle) ? formatDate(rawTitle) : (rawTitle || `Data ${ri + 1}`);
-
-      let body = '';
-      for (let k = 1; k < cols.length; k++) {
-        const i = cols[k];
-        const raw = row[i] !== undefined ? String(row[i]).trim() : '';
-        if (raw === '') continue;
-        const isDate = isDateLike(headers, i, raw);
-        const displayVal = isDate ? formatDate(raw) : raw;
-        body += `<div class="row-item">
-          <div class="row-label">${headers[i] || 'Kolom ' + (i+1)}</div>
-          <div class="row-value ${isDate ? 'date-val' : ''}">${displayVal}</div>
-        </div>`;
-      }
-
-      return `<div class="card">
-        <div class="card-head">
-          <div class="card-head-no">${headers[titleIdx] || 'Kolom 1'} · #${ri + 1}</div>
-          <div class="card-head-title">${title}</div>
-        </div>
-        <div class="card-body">${body || '<span style="font-size:12px;color:var(--muted)">—</span>'}</div>
-      </div>`;
-    }).join('');
-  }
-
-  function filterCards() {
-    const q = (document.getElementById('search-desktop').value || document.getElementById('search-mobile').value).toLowerCase();
-    // Sync kedua input
-    document.getElementById('search-desktop').value = q;
-    document.getElementById('search-mobile').value = q;
-    if (!q) { renderCards(allRows); return; }
-    const filtered = allRows.filter(row => row.some(c => String(c).toLowerCase().includes(q)));
-    renderCards(filtered);
-  }
-
-  // Jalankan saat halaman load
-  window.onload = loadData;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  setTimeout(()=>t.style.display='none',2500);
+}
 </script>
-
-</body>
-</html>
