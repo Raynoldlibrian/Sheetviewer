@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SheetView — Setelan</title>
+  <title>SheetView</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
       --navy:#1a2744; --navy2:#243358; --navy3:#2e4070;
       --gold:#c9a84c; --gold2:#e8c96a;
@@ -19,314 +19,289 @@
     }
     body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
-    .topbar { background:var(--navy); height:54px; display:flex; align-items:center; justify-content:space-between; padding:0 1.5rem; position:sticky; top:0; z-index:50; box-shadow:0 2px 12px rgba(26,39,68,.18); }
-    .brand { display:flex; align-items:center; gap:10px; color:#fff; font-family:'Instrument Serif',serif; font-style:italic; font-size:15px; }
-    .brand-icon { width:28px; height:28px; background:linear-gradient(135deg,var(--gold),var(--gold2)); border-radius:7px; display:flex; align-items:center; justify-content:center; font-style:normal; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; color:var(--navy); }
-    .topbar-badge { background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); font-size:11px; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,.15); }
+    /* Topbar */
+    .topbar { background:var(--navy); height:54px; display:flex; align-items:center; padding:0 1.25rem; gap:12px; position:sticky; top:0; z-index:50; box-shadow:0 2px 12px rgba(26,39,68,.2); }
+    .brand { display:flex; align-items:center; gap:8px; color:#fff; font-family:'Instrument Serif',serif; font-style:italic; font-size:15px; white-space:nowrap; }
+    .brand-icon { width:28px; height:28px; background:linear-gradient(135deg,var(--gold),var(--gold2)); border-radius:7px; display:flex; align-items:center; justify-content:center; font-style:normal; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; color:var(--navy); flex-shrink:0; }
+    .search-wrap { flex:1; position:relative; max-width:440px; margin:0 auto; }
+    .search-wrap i { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,.4); font-size:15px; pointer-events:none; }
+    .search-input { width:100%; padding:7px 12px 7px 34px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); border-radius:var(--radius); color:#fff; font-size:13px; font-family:'Plus Jakarta Sans',sans-serif; }
+    .search-input::placeholder { color:rgba(255,255,255,.4); }
+    .search-input:focus { outline:none; background:rgba(255,255,255,.15); }
+    .topbar-right { display:flex; align-items:center; gap:8px; margin-left:auto; }
+    .count-badge { background:rgba(255,255,255,.1); color:rgba(255,255,255,.65); font-size:11px; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,.15); white-space:nowrap; }
+    .btn-icon { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.8); width:34px; height:34px; border-radius:var(--radius); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:background .15s; }
+    .btn-icon:hover { background:rgba(255,255,255,.2); }
+    .btn-icon.spinning i { animation:spin .6s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
 
-    .main { max-width:620px; margin:2rem auto; padding:0 1rem 3rem; }
-    .page-title { font-family:'Instrument Serif',serif; font-size:26px; color:var(--navy); margin-bottom:.25rem; }
-    .page-sub { font-size:13px; color:var(--muted); margin-bottom:1.75rem; }
+    /* Refresh bar */
+    .refresh-bar { background:rgba(201,168,76,.15); border-bottom:1px solid rgba(201,168,76,.25); padding:6px 1.25rem; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--gold); }
+    .refresh-bar i { font-size:13px; }
+    .refresh-bar.hidden { display:none; }
 
-    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom:1rem; box-shadow:0 1px 4px rgba(26,39,68,.05); }
-    .card-title { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.7px; margin-bottom:1.1rem; }
-    .card-title i { font-size:15px; color:var(--navy3); }
-    .step-num { width:22px; height:22px; background:var(--navy); color:#fff; border-radius:50%; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+    /* Main */
+    .main { padding:1.25rem 1rem 3rem; max-width:1280px; margin:0 auto; }
+    .info-bar { display:flex; align-items:baseline; gap:10px; margin-bottom:1.25rem; flex-wrap:wrap; }
+    .info-title { font-family:'Instrument Serif',serif; font-size:22px; color:var(--navy); }
+    .info-sub { font-size:12px; color:var(--muted); }
 
-    .field { margin-bottom:1.1rem; }
-    .field:last-child { margin-bottom:0; }
-    .field-label { display:block; font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
-    .field-input { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface2); color:var(--text); font-size:13.5px; font-family:'Plus Jakarta Sans',sans-serif; transition:border-color .15s,box-shadow .15s; }
-    .field-input:focus { outline:none; border-color:var(--navy3); box-shadow:0 0 0 3px rgba(46,64,112,.1); }
-    .field-hint { font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.55; }
-    .input-row { display:flex; gap:8px; }
-    .input-row .field-input { flex:1; }
+    /* Cards */
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; box-shadow:0 1px 4px rgba(26,39,68,.05); transition:transform .15s,box-shadow .15s; }
+    .card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(26,39,68,.09); }
+    .card-head { background:var(--navy); padding:13px 16px; position:relative; overflow:hidden; }
+    .card-head::after { content:''; position:absolute; top:0; right:0; width:60px; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.04)); }
+    .card-head-no { font-size:10px; color:rgba(255,255,255,.35); font-weight:600; text-transform:uppercase; letter-spacing:.6px; margin-bottom:3px; }
+    .card-head-title { font-size:14px; font-weight:600; color:#fff; line-height:1.4; }
+    .card-body { padding:13px 16px; }
+    .row-item { margin-bottom:9px; padding-bottom:9px; border-bottom:1px solid var(--border); }
+    .row-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .row-label { font-size:10px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:2px; }
+    .row-value { font-size:13px; color:var(--text); line-height:1.5; word-break:break-word; }
+    .row-value.date-val { color:var(--navy3); font-weight:500; }
 
-    .select-wrap { position:relative; }
-    .select-wrap select { width:100%; padding:9px 32px 9px 12px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface2); color:var(--text); font-size:13.5px; font-family:'Plus Jakarta Sans',sans-serif; appearance:none; cursor:pointer; }
-    .select-wrap select:focus { outline:none; border-color:var(--navy3); }
-    .select-wrap::after { content:''; position:absolute; right:12px; top:50%; transform:translateY(-50%); border:4px solid transparent; border-top:5px solid var(--muted); pointer-events:none; }
+    /* States */
+    .state { grid-column:1/-1; text-align:center; padding:4rem 1rem; color:var(--muted); }
+    .state i { font-size:36px; display:block; margin-bottom:12px; opacity:.3; }
+    .state p { font-size:14px; line-height:1.7; }
 
-    .chips-wrap { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
-    .chip { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border:1px solid var(--border); border-radius:20px; font-size:12.5px; cursor:pointer; background:var(--surface2); color:var(--text); user-select:none; transition:all .15s; font-family:'Plus Jakarta Sans',sans-serif; }
-    .chip:hover { border-color:var(--border2); }
-    .chip.on { background:var(--navy); color:#fff; border-color:var(--navy); }
-    .chip.first { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:var(--navy); border-color:transparent; font-weight:600; cursor:default; }
-    .chip input { display:none; }
+    /* Skeleton */
+    .skel { background:linear-gradient(90deg,var(--border) 25%,var(--surface2) 50%,var(--border) 75%); background-size:200% 100%; animation:shimmer 1.2s infinite; border-radius:var(--radius-lg); height:160px; }
+    @keyframes shimmer { to{background-position:-200% 0} }
 
-    .btn { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:var(--radius); font-size:13px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; border:none; transition:all .15s; }
-    .btn-navy { background:var(--navy); color:#fff; }
-    .btn-navy:hover { background:var(--navy2); }
-    .btn-outline { background:var(--surface); color:var(--text); border:1px solid var(--border); }
-    .btn-outline:hover { border-color:var(--border2); background:var(--surface2); }
-    .btn-gold { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:var(--navy); }
+    /* Mobile search fallback */
+    .mobile-search { display:none; padding:.75rem 1rem 0; }
+    .mobile-search .search-wrap { max-width:100%; margin:0; }
+    .mobile-search .search-wrap i { color:var(--muted); }
+    .mobile-search .search-input { background:var(--surface2); border-color:var(--border); color:var(--text); }
+    .mobile-search .search-input::placeholder { color:var(--muted); }
 
-    .share-box { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem; }
-    .share-url { font-size:11.5px; color:var(--navy3); word-break:break-all; font-family:monospace; line-height:1.6; margin-bottom:.75rem; }
-    .share-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    /* Footer */
+    .footer { text-align:center; padding:1.5rem; font-size:11.5px; color:var(--muted); border-top:1px solid var(--border); margin-top:2rem; }
+    .footer a { color:var(--navy3); text-decoration:none; }
 
-    #sec-sheet, #sec-cols, #sec-customize, #sec-share { display:none; }
+    /* Progress bar refresh */
+    .progress-bar { height:2px; background:var(--gold); position:fixed; top:54px; left:0; z-index:49; transition:width linear; width:0; }
 
-    .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-
-    .toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(10px); background:var(--navy); color:#fff; padding:10px 18px; border-radius:var(--radius); font-size:13px; display:none; z-index:999; box-shadow:0 4px 16px rgba(26,39,68,.25); white-space:nowrap; }
-    .toast.show { display:block; animation:toastIn .2s ease; }
-    @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-
-    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    @media(max-width:480px) { .main{margin:1rem auto;} .page-title{font-size:22px;} .row2{grid-template-columns:1fr;} }
+    @media(max-width:600px) {
+      .search-wrap { display:none; }
+      .mobile-search { display:block; }
+      .topbar { height:50px; }
+      .progress-bar { top:50px; }
+      .brand span { display:none; }
+    }
   </style>
 </head>
 <body>
 
+<div class="progress-bar" id="progress-bar"></div>
+
 <div class="topbar">
   <div class="brand">
     <div class="brand-icon">S</div>
-    SheetView
+    <span>SheetView</span>
   </div>
-  <span class="topbar-badge">Admin</span>
+  <div class="search-wrap">
+    <i class="ti ti-search"></i>
+    <input class="search-input" id="search-d" type="text" placeholder="Cari data..." oninput="filterCards(this.value)" />
+  </div>
+  <div class="topbar-right">
+    <span class="count-badge" id="count-badge">—</span>
+    <button class="btn-icon" id="btn-refresh" onclick="manualRefresh()" title="Muat ulang">
+      <i class="ti ti-refresh"></i>
+    </button>
+  </div>
+</div>
+
+<div class="mobile-search">
+  <div class="search-wrap">
+    <i class="ti ti-search"></i>
+    <input class="search-input" id="search-m" type="text" placeholder="Cari data..." oninput="filterCards(this.value)" />
+  </div>
+</div>
+
+<div class="refresh-bar hidden" id="refresh-bar">
+  <i class="ti ti-clock"></i>
+  <span id="refresh-label">Auto-refresh aktif</span>
 </div>
 
 <div class="main">
-  <h1 class="page-title">Setelan</h1>
-  <p class="page-sub">Sambungkan Google Sheet dan pilih kolom yang ingin ditampilkan.</p>
-
-  <!-- Step 1 -->
-  <div class="card">
-    <div class="card-title"><span class="step-num">1</span><i class="ti ti-code"></i> Apps Script URL</div>
-    <div class="field">
-      <label class="field-label">URL Apps Script (proxy)</label>
-      <input class="field-input" id="in-script" type="text" placeholder="https://script.google.com/macros/s/.../exec" />
-      <p class="field-hint">URL hasil deploy Apps Script sebagai Web App. Jangan dishare ke orang lain.</p>
-    </div>
+  <div class="info-bar">
+    <span class="info-title" id="info-title">Memuat...</span>
+    <span class="info-sub" id="info-sub"></span>
   </div>
-
-  <!-- Step 2 -->
-  <div class="card">
-    <div class="card-title"><span class="step-num">2</span><i class="ti ti-table"></i> Spreadsheet</div>
-    <div class="field">
-      <label class="field-label">URL atau ID Spreadsheet</label>
-      <div class="input-row">
-        <input class="field-input" id="in-ss" type="text" placeholder="https://docs.google.com/spreadsheets/d/..." />
-        <button class="btn btn-outline" id="btn-fetch" onclick="fetchSheets()">
-          <i class="ti ti-refresh"></i> Ambil
-        </button>
-      </div>
-      <p class="field-hint">Spreadsheet harus di-share <em>"Anyone with the link can view"</em>.</p>
-    </div>
-  </div>
-
-  <!-- Step 3 -->
-  <div class="card" id="sec-sheet">
-    <div class="card-title"><span class="step-num">3</span><i class="ti ti-layers-subtract"></i> Pilih Sheet</div>
-    <div class="field">
-      <label class="field-label">Sheet / Tab</label>
-      <div class="select-wrap">
-        <select id="in-sheet" onchange="fetchHeaders()"></select>
-      </div>
-    </div>
-  </div>
-
-  <!-- Step 4 -->
-  <div class="card" id="sec-cols">
-    <div class="card-title"><span class="step-num">4</span><i class="ti ti-columns"></i> Pilih Kolom</div>
-    <p class="field-hint" style="margin-bottom:4px">Klik chip untuk centang/hapus. Kolom pertama (emas) selalu jadi judul kartu.</p>
-    <div class="chips-wrap" id="chips"></div>
-  </div>
-
-  <!-- Step 5: Kustomisasi -->
-  <div class="card" id="sec-customize">
-    <div class="card-title"><span class="step-num">5</span><i class="ti ti-brush"></i> Kustomisasi</div>
-    <div class="row2">
-      <div class="field">
-        <label class="field-label">Judul halaman</label>
-        <input class="field-input" id="in-title" type="text" placeholder="cth: Presensi Musrenbang 2026" oninput="generateLink()" />
-        <p class="field-hint">Tampil di bagian atas halaman viewer.</p>
-      </div>
-      <div class="field">
-        <label class="field-label">Auto-refresh</label>
-        <div class="select-wrap">
-          <select id="in-refresh" onchange="generateLink()">
-            <option value="0">Tidak ada</option>
-            <option value="30">Setiap 30 detik</option>
-            <option value="60">Setiap 1 menit</option>
-            <option value="300">Setiap 5 menit</option>
-            <option value="600">Setiap 10 menit</option>
-          </select>
-        </div>
-        <p class="field-hint">Cocok untuk form yang masih aktif diisi.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Step 6: Share -->
-  <div class="card" id="sec-share">
-    <div class="card-title"><span class="step-num">6</span><i class="ti ti-link"></i> Link Share</div>
-    <p class="field-hint" style="margin-bottom:.9rem">Bagikan link ini — penerima langsung melihat data tanpa perlu setting apapun.</p>
-    <div class="share-box">
-      <div class="share-url" id="share-url">—</div>
-      <div class="share-actions">
-        <button class="btn btn-navy" onclick="copyLink()"><i class="ti ti-copy"></i> Salin link</button>
-        <button class="btn btn-gold" onclick="openView()"><i class="ti ti-external-link"></i> Buka preview</button>
-      </div>
-    </div>
+  <div class="card-grid" id="card-grid">
+    <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+    <div class="skel"></div><div class="skel"></div><div class="skel"></div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="footer">
+  Data diambil langsung dari Google Sheets &middot; <a href="index.html">SheetView Admin</a>
+</div>
 
 <script>
-  const LS = { get: k => localStorage.getItem('sv_'+k)||'', set: (k,v) => localStorage.setItem('sv_'+k,v) };
-  let headers=[], visibleCols=[];
+  const P = new URLSearchParams(window.location.search);
+  const SCRIPT  = P.get('script') || '';
+  const SS_ID   = P.get('ssId')   || '';
+  const SHEET   = P.get('sheet')  || 'Sheet1';
+  const COLS    = P.get('cols')   ? P.get('cols').split(',').map(Number) : null;
+  const TITLE   = P.get('title')  || '';
+  const REFRESH = parseInt(P.get('refresh') || '0');
 
-  function extractId(s) {
-    s=s.trim();
-    const m=s.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-    return m?m[1]:s;
+  let allRows=[], headers=[], visibleCols=[], refreshTimer=null, refreshCountdown=0;
+
+  // Set page title
+  if (TITLE) document.title = TITLE + ' — SheetView';
+
+  function formatDate(val) {
+    if (!val) return val;
+    const s = String(val).trim();
+    const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})T/);
+    if (iso) {
+      const d = new Date(s);
+      if (!isNaN(d)) return d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Jakarta'});
+    }
+    const mdy = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (mdy) {
+      const d = new Date(parseInt(mdy[3]), parseInt(mdy[1])-1, parseInt(mdy[2]));
+      if (!isNaN(d)) return d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    }
+    return s;
   }
 
-  function getBaseUrl() {
-    const loc = window.location.href;
-    return loc.substring(0, loc.lastIndexOf('/')+1);
+  function isDateLike(idx, sampleVal) {
+    const h = (headers[idx]||'').toLowerCase();
+    if (h.includes('tanggal')||h.includes('date')||h.includes('tgl')) return true;
+    if (String(sampleVal).match(/^\d{4}-\d{2}-\d{2}T/)) return true;
+    return false;
   }
 
-  window.onload = function() {
-    document.getElementById('in-script').value = LS.get('script');
-    document.getElementById('in-ss').value = LS.get('ss');
-    document.getElementById('in-title').value = LS.get('title');
-    const savedRefresh = LS.get('refresh');
-    if (savedRefresh) document.getElementById('in-refresh').value = savedRefresh;
-    if (LS.get('script') && LS.get('ss') && LS.get('sheet')) restoreAll();
-  };
+  async function loadData(showSkeleton=true) {
+    const grid = document.getElementById('card-grid');
+    if (showSkeleton) {
+      grid.innerHTML = [1,2,3,4,5,6].map(()=>'<div class="skel"></div>').join('');
+      document.getElementById('info-title').textContent = TITLE || 'Memuat data...';
+      document.getElementById('count-badge').textContent = '—';
+    }
 
-  async function restoreAll() {
-    await fetchSheets(true);
-    const sel = document.getElementById('in-sheet');
-    if (LS.get('sheet')) sel.value = LS.get('sheet');
-    await fetchHeaders(true);
-    const savedCols = LS.get('cols');
-    if (savedCols) { visibleCols=JSON.parse(savedCols); renderChips(); }
-    generateLink();
-  }
+    if (!SCRIPT||!SS_ID) {
+      grid.innerHTML = '<div class="state"><i class="ti ti-alert-circle"></i><p>Parameter tidak lengkap.<br>Gunakan link yang dibuat dari halaman Setelan.</p></div>';
+      return;
+    }
 
-  async function fetchSheets(silent=false) {
-    const script = document.getElementById('in-script').value.trim();
-    const ssId = extractId(document.getElementById('in-ss').value);
-    if (!script||!ssId) { showToast('Isi Apps Script URL dan URL/ID spreadsheet dulu.'); return; }
-
-    const btn = document.getElementById('btn-fetch');
-    btn.disabled=true;
-    btn.innerHTML='<span class="spinner"></span> Mengambil...';
+    // Spin icon
+    const btnR = document.getElementById('btn-refresh');
+    btnR.classList.add('spinning');
 
     try {
-      LS.set('script', script);
-      LS.set('ss', document.getElementById('in-ss').value.trim());
-
-      const r = await fetch(`${script}?ssId=${encodeURIComponent(ssId)}&sheet=__sheets__`);
-      const text = await r.text();
-      let d;
-      try { d=JSON.parse(text); } catch(e) { showToast('Response tidak valid dari Apps Script.'); return; }
-
-      if (d.error) { showToast('Error: '+d.error); return; }
-      if (!d.sheets||!d.sheets.length) { showToast('Tidak ada sheet ditemukan.'); return; }
-
-      const sel = document.getElementById('in-sheet');
-      sel.innerHTML = d.sheets.map(s=>`<option value="${s}">${s}</option>`).join('');
-      document.getElementById('sec-sheet').style.cssText='display:block!important';
-
-      if (!silent) showToast(d.sheets.length+' sheet ditemukan.');
-      await fetchHeaders(silent);
-    } catch(e) { showToast('Gagal: '+e.message); }
-
-    btn.disabled=false;
-    btn.innerHTML='<i class="ti ti-refresh"></i> Ambil';
-  }
-
-  async function fetchHeaders(silent=false) {
-    const script = LS.get('script')||document.getElementById('in-script').value.trim();
-    const ssId = extractId(LS.get('ss')||document.getElementById('in-ss').value);
-    const sheet = document.getElementById('in-sheet').value;
-    if (!script||!ssId||!sheet) return;
-
-    try {
-      const r = await fetch(`${script}?ssId=${encodeURIComponent(ssId)}&sheet=${encodeURIComponent(sheet)}&rowsOnly=1`);
+      const r = await fetch(`${SCRIPT}?ssId=${encodeURIComponent(SS_ID)}&sheet=${encodeURIComponent(SHEET)}`);
       const d = await r.json();
-      if (d.error) { showToast('Error: '+d.error); return; }
+      if (d.error) { grid.innerHTML=`<div class="state"><i class="ti ti-x"></i><p>Error: ${d.error}</p></div>`; return; }
 
-      headers = (d.data&&d.data[0])||[];
-      visibleCols = headers.map((_,i)=>i);
-      renderChips();
-      LS.set('sheet', sheet);
-      document.getElementById('sec-cols').style.cssText='display:block!important';
-      document.getElementById('sec-customize').style.cssText='display:block!important';
-      generateLink();
-    } catch(e) { if(!silent) showToast('Gagal ambil header: '+e.message); }
+      const rows = d.data||[];
+      if (rows.length<2) { grid.innerHTML='<div class="state"><i class="ti ti-table-off"></i><p>Sheet kosong atau belum ada data.</p></div>'; return; }
+
+      headers = rows[0];
+      allRows = rows.slice(1).filter(row=>row.some(c=>String(c).trim()!==''));
+      visibleCols = (COLS&&COLS.length) ? COLS.filter(i=>i<headers.length) : headers.map((_,i)=>i);
+
+      const displayTitle = TITLE || SHEET;
+      document.getElementById('info-title').textContent = displayTitle;
+      document.getElementById('info-sub').textContent = allRows.length + ' data';
+      document.getElementById('count-badge').textContent = allRows.length + ' baris';
+      document.title = displayTitle + ' — SheetView';
+
+      renderCards(allRows);
+    } catch(e) {
+      grid.innerHTML = `<div class="state"><i class="ti ti-wifi-off"></i><p>Gagal memuat data.<br>${e.message}</p></div>`;
+    }
+    btnR.classList.remove('spinning');
   }
 
-  function renderChips() {
-    document.getElementById('chips').innerHTML = headers.map((h,i)=>{
-      const isFirst=i===0, isOn=visibleCols.includes(i);
-      return `<label class="chip ${isFirst?'first':isOn?'on':''}" data-i="${i}">
-        <input type="checkbox" ${isOn?'checked':''} ${isFirst?'disabled':''} onchange="toggleCol(${i},this)" />
-        ${isFirst?'<i class="ti ti-crown" style="font-size:11px"></i>':''} ${h||'Kolom '+(i+1)}
-      </label>`;
+  function renderCards(rows) {
+    const grid = document.getElementById('card-grid');
+    if (!rows.length) { grid.innerHTML='<div class="state"><i class="ti ti-search-off"></i><p>Tidak ada hasil yang cocok.</p></div>'; return; }
+    const cols = visibleCols.length ? visibleCols : headers.map((_,i)=>i);
+    grid.innerHTML = rows.map((row,ri)=>{
+      const ti = cols[0];
+      const rawTitle = row[ti]!==undefined ? String(row[ti]).trim() : '';
+      const title = isDateLike(ti,rawTitle) ? formatDate(rawTitle) : (rawTitle||`Data ${ri+1}`);
+      let body='';
+      for (let k=1;k<cols.length;k++) {
+        const i=cols[k];
+        const raw = row[i]!==undefined ? String(row[i]).trim() : '';
+        if (!raw) continue;
+        const isDate = isDateLike(i, raw);
+        body += `<div class="row-item">
+          <div class="row-label">${headers[i]||'Kolom '+(i+1)}</div>
+          <div class="row-value ${isDate?'date-val':''}">${isDate?formatDate(raw):raw}</div>
+        </div>`;
+      }
+      return `<div class="card">
+        <div class="card-head">
+          <div class="card-head-no">${headers[ti]||'Kolom 1'} · #${ri+1}</div>
+          <div class="card-head-title">${title}</div>
+        </div>
+        <div class="card-body">${body||'<span style="font-size:12px;color:var(--muted)">—</span>'}</div>
+      </div>`;
     }).join('');
   }
 
-  function toggleCol(i, cb) {
-    const chip=cb.closest('.chip');
-    if (cb.checked) { if(!visibleCols.includes(i)) visibleCols.push(i); chip.classList.add('on'); }
-    else { visibleCols=visibleCols.filter(c=>c!==i); chip.classList.remove('on'); }
-    visibleCols.sort((a,b)=>a-b);
-    LS.set('cols', JSON.stringify(visibleCols));
-    generateLink();
+  function filterCards(q) {
+    // Sync kedua input
+    document.getElementById('search-d').value = q;
+    document.getElementById('search-m').value = q;
+    if (!q) { renderCards(allRows); return; }
+    const ql = q.toLowerCase();
+    renderCards(allRows.filter(row=>row.some(c=>String(c).toLowerCase().includes(ql))));
   }
 
-  function generateLink() {
-    const script = LS.get('script')||document.getElementById('in-script').value.trim();
-    const ssId = extractId(LS.get('ss')||document.getElementById('in-ss').value);
-    const sheetEl = document.getElementById('in-sheet');
-    const sheet = sheetEl ? sheetEl.value : LS.get('sheet');
-    if (!script||!ssId||!sheet) return;
-
-    const title = document.getElementById('in-title').value.trim();
-    const refresh = document.getElementById('in-refresh').value;
-
-    LS.set('cols', JSON.stringify(visibleCols));
-    if (title) LS.set('title', title);
-    LS.set('refresh', refresh);
-
-    const p = new URLSearchParams({ script, ssId, sheet, cols: visibleCols.join(',') });
-    if (title) p.set('title', title);
-    if (refresh !== '0') p.set('refresh', refresh);
-
-    const absUrl = getBaseUrl() + 'view.html?' + p.toString();
-    document.getElementById('share-url').textContent = absUrl;
-    document.getElementById('sec-share').style.cssText='display:block!important';
+  function manualRefresh() {
+    loadData(false);
+    resetRefreshTimer();
   }
 
-  function copyLink() {
-    const url = document.getElementById('share-url').textContent;
-    navigator.clipboard.writeText(url).then(()=>showToast('Link disalin! ✓')).catch(()=>{
-      const ta=document.createElement('textarea');
-      ta.value=url; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      showToast('Link disalin! ✓');
-    });
+  // Auto-refresh
+  function startRefresh() {
+    if (!REFRESH||REFRESH<=0) return;
+    const bar = document.getElementById('refresh-bar');
+    const label = document.getElementById('refresh-label');
+    const pb = document.getElementById('progress-bar');
+    bar.classList.remove('hidden');
+
+    function tick() {
+      refreshCountdown--;
+      const pct = ((REFRESH - refreshCountdown) / REFRESH) * 100;
+      pb.style.width = pct + '%';
+      pb.style.transitionDuration = '1s';
+
+      const mins = Math.floor(refreshCountdown/60);
+      const secs = refreshCountdown % 60;
+      label.textContent = `Auto-refresh dalam ${mins>0?mins+'m ':''} ${secs}d`;
+
+      if (refreshCountdown <= 0) {
+        loadData(false);
+        resetRefreshTimer();
+      }
+    }
+
+    resetRefreshTimer();
+    function resetRefreshTimer() {
+      clearInterval(refreshTimer);
+      refreshCountdown = REFRESH;
+      pb.style.transitionDuration = '0s';
+      pb.style.width = '0%';
+      refreshTimer = setInterval(tick, 1000);
+    }
+    window.resetRefreshTimer = resetRefreshTimer;
   }
 
-  function openView() {
-    const url = document.getElementById('share-url').textContent;
-    if (!url||url==='—') { showToast('Generate link dulu.'); return; }
-    window.open(url, '_blank');
-  }
-
-  function showToast(msg) {
-    const t=document.getElementById('toast');
-    t.textContent=msg; t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'), 2500);
-  }
+  window.onload = function() {
+    loadData();
+    startRefresh();
+  };
 </script>
 </body>
 </html>
