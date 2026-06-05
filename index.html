@@ -9,339 +9,73 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --navy: #1a2744;
-      --navy2: #243358;
-      --navy3: #2e4070;
-      --gold: #c9a84c;
-      --gold2: #e8c96a;
-      --bg: #f0f2f7;
-      --surface: #ffffff;
-      --surface2: #f7f8fb;
-      --border: #e2e6ef;
-      --border2: #cdd3e0;
-      --text: #1a2744;
-      --muted: #7a85a0;
-      --radius: 10px;
-      --radius-lg: 16px;
+      --navy:#1a2744; --navy2:#243358; --navy3:#2e4070;
+      --gold:#c9a84c; --gold2:#e8c96a;
+      --bg:#f0f2f7; --surface:#fff; --surface2:#f7f8fb;
+      --border:#e2e6ef; --border2:#cdd3e0;
+      --text:#1a2744; --muted:#7a85a0;
+      --radius:10px; --radius-lg:16px;
     }
+    body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
+    .topbar { background:var(--navy); height:54px; display:flex; align-items:center; justify-content:space-between; padding:0 1.5rem; position:sticky; top:0; z-index:50; box-shadow:0 2px 12px rgba(26,39,68,.18); }
+    .brand { display:flex; align-items:center; gap:10px; color:#fff; font-family:'Instrument Serif',serif; font-style:italic; font-size:15px; }
+    .brand-icon { width:28px; height:28px; background:linear-gradient(135deg,var(--gold),var(--gold2)); border-radius:7px; display:flex; align-items:center; justify-content:center; font-style:normal; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; color:var(--navy); }
+    .topbar-badge { background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); font-size:11px; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,.15); }
 
-    /* Topbar */
-    .topbar {
-      background: var(--navy);
-      height: 54px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1.5rem;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 2px 12px rgba(26,39,68,.18);
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -.2px;
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-    }
-    .brand-icon {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-style: normal;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--navy);
-    }
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .topbar-badge {
-      background: rgba(255,255,255,.1);
-      color: rgba(255,255,255,.7);
-      font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,.15);
-    }
+    .main { max-width:620px; margin:2rem auto; padding:0 1rem 3rem; }
+    .page-title { font-family:'Instrument Serif',serif; font-size:26px; color:var(--navy); margin-bottom:.25rem; }
+    .page-sub { font-size:13px; color:var(--muted); margin-bottom:1.75rem; }
 
-    /* Layout */
-    .main {
-      max-width: 620px;
-      margin: 2rem auto;
-      padding: 0 1rem 3rem;
-    }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom:1rem; box-shadow:0 1px 4px rgba(26,39,68,.05); }
+    .card-title { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.7px; margin-bottom:1.1rem; }
+    .card-title i { font-size:15px; color:var(--navy3); }
+    .step-num { width:22px; height:22px; background:var(--navy); color:#fff; border-radius:50%; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
 
-    .page-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: 26px;
-      color: var(--navy);
-      margin-bottom: .25rem;
-    }
-    .page-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 1.75rem;
-    }
+    .field { margin-bottom:1.1rem; }
+    .field:last-child { margin-bottom:0; }
+    .field-label { display:block; font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+    .field-input { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface2); color:var(--text); font-size:13.5px; font-family:'Plus Jakarta Sans',sans-serif; transition:border-color .15s,box-shadow .15s; }
+    .field-input:focus { outline:none; border-color:var(--navy3); box-shadow:0 0 0 3px rgba(46,64,112,.1); }
+    .field-hint { font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.55; }
+    .input-row { display:flex; gap:8px; }
+    .input-row .field-input { flex:1; }
 
-    /* Card */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 1px 4px rgba(26,39,68,.05);
-    }
-    .card-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .7px;
-      margin-bottom: 1.1rem;
-    }
-    .card-title i { font-size: 15px; color: var(--navy3); }
-    .step-num {
-      width: 22px;
-      height: 22px;
-      background: var(--navy);
-      color: #fff;
-      border-radius: 50%;
-      font-size: 11px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+    .select-wrap { position:relative; }
+    .select-wrap select { width:100%; padding:9px 32px 9px 12px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface2); color:var(--text); font-size:13.5px; font-family:'Plus Jakarta Sans',sans-serif; appearance:none; cursor:pointer; }
+    .select-wrap select:focus { outline:none; border-color:var(--navy3); }
+    .select-wrap::after { content:''; position:absolute; right:12px; top:50%; transform:translateY(-50%); border:4px solid transparent; border-top:5px solid var(--muted); pointer-events:none; }
 
-    /* Fields */
-    .field { margin-bottom: 1.1rem; }
-    .field:last-child { margin-bottom: 0; }
-    .field-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 6px;
-    }
-    .field-input {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--surface2);
-      color: var(--text);
-      font-size: 13.5px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      transition: border-color .15s, box-shadow .15s;
-    }
-    .field-input:focus {
-      outline: none;
-      border-color: var(--navy3);
-      box-shadow: 0 0 0 3px rgba(46,64,112,.1);
-    }
-    .field-hint {
-      font-size: 11.5px;
-      color: var(--muted);
-      margin-top: 5px;
-      line-height: 1.55;
-    }
-    .input-row {
-      display: flex;
-      gap: 8px;
-    }
-    .input-row .field-input { flex: 1; }
+    .chips-wrap { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+    .chip { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border:1px solid var(--border); border-radius:20px; font-size:12.5px; cursor:pointer; background:var(--surface2); color:var(--text); user-select:none; transition:all .15s; font-family:'Plus Jakarta Sans',sans-serif; }
+    .chip:hover { border-color:var(--border2); }
+    .chip.on { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .chip.first { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:var(--navy); border-color:transparent; font-weight:600; cursor:default; }
+    .chip input { display:none; }
 
-    /* Select */
-    .select-wrap { position: relative; }
-    .select-wrap select {
-      width: 100%;
-      padding: 9px 32px 9px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--surface2);
-      color: var(--text);
-      font-size: 13.5px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      appearance: none;
-      cursor: pointer;
-    }
-    .select-wrap select:focus { outline: none; border-color: var(--navy3); }
-    .select-wrap::after {
-      content: '';
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 4px solid transparent;
-      border-top: 5px solid var(--muted);
-      pointer-events: none;
-    }
+    .btn { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:var(--radius); font-size:13px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; border:none; transition:all .15s; }
+    .btn-navy { background:var(--navy); color:#fff; }
+    .btn-navy:hover { background:var(--navy2); }
+    .btn-outline { background:var(--surface); color:var(--text); border:1px solid var(--border); }
+    .btn-outline:hover { border-color:var(--border2); background:var(--surface2); }
+    .btn-gold { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:var(--navy); }
 
-    /* Chips kolom */
-    .chips-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 8px;
-    }
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 12px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 12.5px;
-      cursor: pointer;
-      background: var(--surface2);
-      color: var(--text);
-      user-select: none;
-      transition: all .15s;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .chip:hover { border-color: var(--border2); }
-    .chip.on {
-      background: var(--navy);
-      color: #fff;
-      border-color: var(--navy);
-    }
-    .chip.first {
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      color: var(--navy);
-      border-color: transparent;
-      font-weight: 600;
-      cursor: default;
-    }
-    .chip input { display: none; }
+    .share-box { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem; }
+    .share-url { font-size:11.5px; color:var(--navy3); word-break:break-all; font-family:monospace; line-height:1.6; margin-bottom:.75rem; }
+    .share-actions { display:flex; gap:8px; flex-wrap:wrap; }
 
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 18px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      font-weight: 600;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      cursor: pointer;
-      border: none;
-      transition: all .15s;
-    }
-    .btn-navy {
-      background: var(--navy);
-      color: #fff;
-    }
-    .btn-navy:hover { background: var(--navy2); }
-    .btn-navy:disabled { opacity: .45; cursor: not-allowed; }
-    .btn-outline {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-outline:hover { border-color: var(--border2); background: var(--surface2); }
-    .btn-gold {
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      color: var(--navy);
-    }
-    .btn-gold:hover { opacity: .9; }
+    #sec-sheet, #sec-cols, #sec-customize, #sec-share { display:none; }
 
-    /* Share link box */
-    .share-box {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-    }
-    .share-url {
-      font-size: 12px;
-      color: var(--navy3);
-      word-break: break-all;
-      font-family: monospace;
-      line-height: 1.6;
-      margin-bottom: .75rem;
-    }
-    .share-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
 
-    /* Hidden sections */
-    #sec-sheet, #sec-cols, #sec-share { display: none; }
+    .toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(10px); background:var(--navy); color:#fff; padding:10px 18px; border-radius:var(--radius); font-size:13px; display:none; z-index:999; box-shadow:0 4px 16px rgba(26,39,68,.25); white-space:nowrap; }
+    .toast.show { display:block; animation:toastIn .2s ease; }
+    @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
 
-    /* Loading spinner */
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255,255,255,.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .6s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(10px);
-      background: var(--navy);
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      display: none;
-      z-index: 999;
-      box-shadow: 0 4px 16px rgba(26,39,68,.25);
-      white-space: nowrap;
-    }
-    .toast.show {
-      display: block;
-      animation: toastIn .2s ease;
-    }
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 1.25rem 0;
-    }
-
-    @media (max-width: 480px) {
-      .main { margin: 1rem auto; }
-      .page-title { font-size: 22px; }
-    }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media(max-width:480px) { .main{margin:1rem auto;} .page-title{font-size:22px;} .row2{grid-template-columns:1fr;} }
   </style>
 </head>
 <body>
@@ -351,42 +85,30 @@
     <div class="brand-icon">S</div>
     SheetView
   </div>
-  <div class="topbar-right">
-    <span class="topbar-badge">Admin</span>
-  </div>
+  <span class="topbar-badge">Admin</span>
 </div>
 
 <div class="main">
   <h1 class="page-title">Setelan</h1>
   <p class="page-sub">Sambungkan Google Sheet dan pilih kolom yang ingin ditampilkan.</p>
 
-  <!-- Step 1: Script URL -->
+  <!-- Step 1 -->
   <div class="card">
-    <div class="card-title">
-      <span class="step-num">1</span>
-      <i class="ti ti-code"></i>
-      Apps Script URL
-    </div>
+    <div class="card-title"><span class="step-num">1</span><i class="ti ti-code"></i> Apps Script URL</div>
     <div class="field">
       <label class="field-label">URL Apps Script (proxy)</label>
-      <input class="field-input" id="in-script" type="text"
-        placeholder="https://script.google.com/macros/s/.../exec" />
-      <p class="field-hint">URL hasil deploy Apps Script sebagai Web App. Simpan baik-baik, jangan dishare.</p>
+      <input class="field-input" id="in-script" type="text" placeholder="https://script.google.com/macros/s/.../exec" />
+      <p class="field-hint">URL hasil deploy Apps Script sebagai Web App. Jangan dishare ke orang lain.</p>
     </div>
   </div>
 
-  <!-- Step 2: Spreadsheet -->
+  <!-- Step 2 -->
   <div class="card">
-    <div class="card-title">
-      <span class="step-num">2</span>
-      <i class="ti ti-table"></i>
-      Spreadsheet
-    </div>
+    <div class="card-title"><span class="step-num">2</span><i class="ti ti-table"></i> Spreadsheet</div>
     <div class="field">
       <label class="field-label">URL atau ID Spreadsheet</label>
       <div class="input-row">
-        <input class="field-input" id="in-ss" type="text"
-          placeholder="https://docs.google.com/spreadsheets/d/..." />
+        <input class="field-input" id="in-ss" type="text" placeholder="https://docs.google.com/spreadsheets/d/..." />
         <button class="btn btn-outline" id="btn-fetch" onclick="fetchSheets()">
           <i class="ti ti-refresh"></i> Ambil
         </button>
@@ -395,13 +117,9 @@
     </div>
   </div>
 
-  <!-- Step 3: Pilih Sheet -->
+  <!-- Step 3 -->
   <div class="card" id="sec-sheet">
-    <div class="card-title">
-      <span class="step-num">3</span>
-      <i class="ti ti-layers-subtract"></i>
-      Pilih Sheet
-    </div>
+    <div class="card-title"><span class="step-num">3</span><i class="ti ti-layers-subtract"></i> Pilih Sheet</div>
     <div class="field">
       <label class="field-label">Sheet / Tab</label>
       <div class="select-wrap">
@@ -410,67 +128,76 @@
     </div>
   </div>
 
-  <!-- Step 4: Pilih Kolom -->
+  <!-- Step 4 -->
   <div class="card" id="sec-cols">
-    <div class="card-title">
-      <span class="step-num">4</span>
-      <i class="ti ti-columns"></i>
-      Pilih Kolom
-    </div>
-    <p class="field-hint" style="margin-bottom:4px">
-      Klik chip untuk centang/hapus. Kolom pertama (emas) selalu jadi judul kartu dan tidak bisa dihapus.
-    </p>
+    <div class="card-title"><span class="step-num">4</span><i class="ti ti-columns"></i> Pilih Kolom</div>
+    <p class="field-hint" style="margin-bottom:4px">Klik chip untuk centang/hapus. Kolom pertama (emas) selalu jadi judul kartu.</p>
     <div class="chips-wrap" id="chips"></div>
   </div>
 
-  <!-- Step 5: Generate Link -->
-  <div class="card" id="sec-share">
-    <div class="card-title">
-      <span class="step-num">5</span>
-      <i class="ti ti-link"></i>
-      Link Share
-    </div>
-    <p class="field-hint" style="margin-bottom:.9rem">
-      Bagikan link ini ke siapapun — mereka langsung melihat data tanpa perlu setting apapun.
-    </p>
-    <div class="share-box">
-      <div class="share-url" id="share-url">—</div>
-      <div class="share-actions">
-        <button class="btn btn-navy" onclick="copyLink()">
-          <i class="ti ti-copy"></i> Salin link
-        </button>
-        <button class="btn btn-outline" onclick="openView()">
-          <i class="ti ti-external-link"></i> Buka preview
-        </button>
+  <!-- Step 5: Kustomisasi -->
+  <div class="card" id="sec-customize">
+    <div class="card-title"><span class="step-num">5</span><i class="ti ti-brush"></i> Kustomisasi</div>
+    <div class="row2">
+      <div class="field">
+        <label class="field-label">Judul halaman</label>
+        <input class="field-input" id="in-title" type="text" placeholder="cth: Presensi Musrenbang 2026" oninput="generateLink()" />
+        <p class="field-hint">Tampil di bagian atas halaman viewer.</p>
+      </div>
+      <div class="field">
+        <label class="field-label">Auto-refresh</label>
+        <div class="select-wrap">
+          <select id="in-refresh" onchange="generateLink()">
+            <option value="0">Tidak ada</option>
+            <option value="30">Setiap 30 detik</option>
+            <option value="60">Setiap 1 menit</option>
+            <option value="300">Setiap 5 menit</option>
+            <option value="600">Setiap 10 menit</option>
+          </select>
+        </div>
+        <p class="field-hint">Cocok untuk form yang masih aktif diisi.</p>
       </div>
     </div>
   </div>
 
+  <!-- Step 6: Share -->
+  <div class="card" id="sec-share">
+    <div class="card-title"><span class="step-num">6</span><i class="ti ti-link"></i> Link Share</div>
+    <p class="field-hint" style="margin-bottom:.9rem">Bagikan link ini — penerima langsung melihat data tanpa perlu setting apapun.</p>
+    <div class="share-box">
+      <div class="share-url" id="share-url">—</div>
+      <div class="share-actions">
+        <button class="btn btn-navy" onclick="copyLink()"><i class="ti ti-copy"></i> Salin link</button>
+        <button class="btn btn-gold" onclick="openView()"><i class="ti ti-external-link"></i> Buka preview</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  const LS = {
-    get: k => localStorage.getItem('sv_' + k) || '',
-    set: (k, v) => localStorage.setItem('sv_' + k, v)
-  };
-
-  let headers = [];
-  let visibleCols = [];
+  const LS = { get: k => localStorage.getItem('sv_'+k)||'', set: (k,v) => localStorage.setItem('sv_'+k,v) };
+  let headers=[], visibleCols=[];
 
   function extractId(s) {
-    s = s.trim();
-    const m = s.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-    return m ? m[1] : s;
+    s=s.trim();
+    const m=s.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+    return m?m[1]:s;
   }
 
-  window.onload = function () {
+  function getBaseUrl() {
+    const loc = window.location.href;
+    return loc.substring(0, loc.lastIndexOf('/')+1);
+  }
+
+  window.onload = function() {
     document.getElementById('in-script').value = LS.get('script');
     document.getElementById('in-ss').value = LS.get('ss');
-    if (LS.get('script') && LS.get('ss') && LS.get('sheet')) {
-      restoreAll();
-    }
+    document.getElementById('in-title').value = LS.get('title');
+    const savedRefresh = LS.get('refresh');
+    if (savedRefresh) document.getElementById('in-refresh').value = savedRefresh;
+    if (LS.get('script') && LS.get('ss') && LS.get('sheet')) restoreAll();
   };
 
   async function restoreAll() {
@@ -479,158 +206,127 @@
     if (LS.get('sheet')) sel.value = LS.get('sheet');
     await fetchHeaders(true);
     const savedCols = LS.get('cols');
-    if (savedCols) {
-      visibleCols = JSON.parse(savedCols);
-      renderChips();
-    }
+    if (savedCols) { visibleCols=JSON.parse(savedCols); renderChips(); }
     generateLink();
   }
 
-  async function fetchSheets(silent = false) {
+  async function fetchSheets(silent=false) {
     const script = document.getElementById('in-script').value.trim();
     const ssId = extractId(document.getElementById('in-ss').value);
-    if (!script || !ssId) { showToast('Isi Apps Script URL dan URL/ID spreadsheet dulu.'); return; }
+    if (!script||!ssId) { showToast('Isi Apps Script URL dan URL/ID spreadsheet dulu.'); return; }
 
     const btn = document.getElementById('btn-fetch');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Mengambil...';
+    btn.disabled=true;
+    btn.innerHTML='<span class="spinner"></span> Mengambil...';
 
     try {
-      // Simpan dulu ke LS sebelum fetch
       LS.set('script', script);
       LS.set('ss', document.getElementById('in-ss').value.trim());
 
-      const url = `${script}?ssId=${encodeURIComponent(ssId)}&sheet=__sheets__`;
-      const r = await fetch(url);
+      const r = await fetch(`${script}?ssId=${encodeURIComponent(ssId)}&sheet=__sheets__`);
       const text = await r.text();
       let d;
-      try { d = JSON.parse(text); } catch(pe) { showToast('Response tidak valid dari Apps Script.'); return; }
+      try { d=JSON.parse(text); } catch(e) { showToast('Response tidak valid dari Apps Script.'); return; }
 
-      let sheetNames = [];
-      if (d.sheets && d.sheets.length > 0) {
-        sheetNames = d.sheets;
-      } else if (d.error) {
-        showToast('Error: ' + d.error);
-        return;
-      } else {
-        showToast('Tidak ada sheet ditemukan.');
-        return;
-      }
+      if (d.error) { showToast('Error: '+d.error); return; }
+      if (!d.sheets||!d.sheets.length) { showToast('Tidak ada sheet ditemukan.'); return; }
 
       const sel = document.getElementById('in-sheet');
-      sel.innerHTML = sheetNames.map(s => `<option value="${s}">${s}</option>`).join('');
-      
-      // Tampilkan section sheet
-      const secSheet = document.getElementById('sec-sheet');
-      secSheet.style.cssText = 'display: block !important';
+      sel.innerHTML = d.sheets.map(s=>`<option value="${s}">${s}</option>`).join('');
+      document.getElementById('sec-sheet').style.cssText='display:block!important';
 
-      if (!silent) showToast(sheetNames.length + ' sheet ditemukan.');
+      if (!silent) showToast(d.sheets.length+' sheet ditemukan.');
       await fetchHeaders(silent);
+    } catch(e) { showToast('Gagal: '+e.message); }
 
-    } catch (e) {
-      showToast('Gagal: ' + e.message);
-    }
-
-    btn.disabled = false;
-    btn.innerHTML = '<i class="ti ti-refresh"></i> Ambil';
+    btn.disabled=false;
+    btn.innerHTML='<i class="ti ti-refresh"></i> Ambil';
   }
 
-  async function fetchHeaders(silent = false) {
-    const script = LS.get('script') || document.getElementById('in-script').value.trim();
-    const ssId = extractId(LS.get('ss') || document.getElementById('in-ss').value);
+  async function fetchHeaders(silent=false) {
+    const script = LS.get('script')||document.getElementById('in-script').value.trim();
+    const ssId = extractId(LS.get('ss')||document.getElementById('in-ss').value);
     const sheet = document.getElementById('in-sheet').value;
-    if (!script || !ssId || !sheet) return;
+    if (!script||!ssId||!sheet) return;
 
     try {
-      const r = await fetch(`${script}?ssId=${ssId}&sheet=${encodeURIComponent(sheet)}&rowsOnly=1`);
+      const r = await fetch(`${script}?ssId=${encodeURIComponent(ssId)}&sheet=${encodeURIComponent(sheet)}&rowsOnly=1`);
       const d = await r.json();
-      if (d.error) { showToast('Error: ' + d.error); return; }
+      if (d.error) { showToast('Error: '+d.error); return; }
 
-      const rows = d.data || [];
-      headers = rows.length > 0 ? rows[0] : [];
-      visibleCols = headers.map((_, i) => i);
-
+      headers = (d.data&&d.data[0])||[];
+      visibleCols = headers.map((_,i)=>i);
       renderChips();
       LS.set('sheet', sheet);
-      document.getElementById('sec-cols').style.cssText = 'display: block !important';
+      document.getElementById('sec-cols').style.cssText='display:block!important';
+      document.getElementById('sec-customize').style.cssText='display:block!important';
       generateLink();
-
-    } catch (e) {
-      if (!silent) showToast('Gagal ambil header: ' + e.message);
-    }
+    } catch(e) { if(!silent) showToast('Gagal ambil header: '+e.message); }
   }
 
   function renderChips() {
-    const wrap = document.getElementById('chips');
-    wrap.innerHTML = headers.map((h, i) => {
-      const isFirst = i === 0;
-      const isOn = visibleCols.includes(i);
-      return `<label class="chip ${isFirst ? 'first' : isOn ? 'on' : ''}" data-i="${i}">
-        <input type="checkbox" ${isOn ? 'checked' : ''} ${isFirst ? 'disabled' : ''} onchange="toggleCol(${i}, this)" />
-        ${isFirst ? '<i class="ti ti-crown" style="font-size:11px"></i>' : ''}
-        ${h || 'Kolom ' + (i + 1)}
+    document.getElementById('chips').innerHTML = headers.map((h,i)=>{
+      const isFirst=i===0, isOn=visibleCols.includes(i);
+      return `<label class="chip ${isFirst?'first':isOn?'on':''}" data-i="${i}">
+        <input type="checkbox" ${isOn?'checked':''} ${isFirst?'disabled':''} onchange="toggleCol(${i},this)" />
+        ${isFirst?'<i class="ti ti-crown" style="font-size:11px"></i>':''} ${h||'Kolom '+(i+1)}
       </label>`;
     }).join('');
   }
 
   function toggleCol(i, cb) {
-    const chip = cb.closest('.chip');
-    if (cb.checked) {
-      if (!visibleCols.includes(i)) visibleCols.push(i);
-      chip.classList.add('on');
-    } else {
-      visibleCols = visibleCols.filter(c => c !== i);
-      chip.classList.remove('on');
-    }
-    visibleCols.sort((a, b) => a - b);
+    const chip=cb.closest('.chip');
+    if (cb.checked) { if(!visibleCols.includes(i)) visibleCols.push(i); chip.classList.add('on'); }
+    else { visibleCols=visibleCols.filter(c=>c!==i); chip.classList.remove('on'); }
+    visibleCols.sort((a,b)=>a-b);
     LS.set('cols', JSON.stringify(visibleCols));
     generateLink();
   }
 
   function generateLink() {
-    const script = LS.get('script') || document.getElementById('in-script').value.trim();
-    const ssId = extractId(LS.get('ss') || document.getElementById('in-ss').value);
-    const sheet = document.getElementById('in-sheet') ? document.getElementById('in-sheet').value : LS.get('sheet');
-    const cols = visibleCols.join(',');
+    const script = LS.get('script')||document.getElementById('in-script').value.trim();
+    const ssId = extractId(LS.get('ss')||document.getElementById('in-ss').value);
+    const sheetEl = document.getElementById('in-sheet');
+    const sheet = sheetEl ? sheetEl.value : LS.get('sheet');
+    if (!script||!ssId||!sheet) return;
 
-    if (!script || !ssId || !sheet) return;
+    const title = document.getElementById('in-title').value.trim();
+    const refresh = document.getElementById('in-refresh').value;
 
     LS.set('cols', JSON.stringify(visibleCols));
+    if (title) LS.set('title', title);
+    LS.set('refresh', refresh);
 
-    // Encode script URL supaya aman di query param
-    const viewUrl = `view.html?script=${encodeURIComponent(script)}&ssId=${encodeURIComponent(ssId)}&sheet=${encodeURIComponent(sheet)}&cols=${encodeURIComponent(cols)}`;
-    document.getElementById('share-url').textContent = viewUrl;
-    document.getElementById('sec-share').style.cssText = 'display: block !important';
+    const p = new URLSearchParams({ script, ssId, sheet, cols: visibleCols.join(',') });
+    if (title) p.set('title', title);
+    if (refresh !== '0') p.set('refresh', refresh);
+
+    const absUrl = getBaseUrl() + 'view.html?' + p.toString();
+    document.getElementById('share-url').textContent = absUrl;
+    document.getElementById('sec-share').style.cssText='display:block!important';
   }
 
   function copyLink() {
     const url = document.getElementById('share-url').textContent;
-    // Build absolute URL
-    const abs = window.location.origin + window.location.pathname.replace('index.html', '') + url;
-    navigator.clipboard.writeText(abs).then(() => showToast('Link disalin!')).catch(() => {
-      // Fallback
-      const ta = document.createElement('textarea');
-      ta.value = abs;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      showToast('Link disalin!');
+    navigator.clipboard.writeText(url).then(()=>showToast('Link disalin! ✓')).catch(()=>{
+      const ta=document.createElement('textarea');
+      ta.value=url; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('Link disalin! ✓');
     });
   }
 
   function openView() {
     const url = document.getElementById('share-url').textContent;
+    if (!url||url==='—') { showToast('Generate link dulu.'); return; }
     window.open(url, '_blank');
   }
 
   function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2500);
   }
 </script>
-
 </body>
 </html>
