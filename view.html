@@ -253,14 +253,53 @@
     // Sync kedua input
     document.getElementById('search-d').value = q;
     document.getElementById('search-m').value = q;
-    if (!q) { renderCards(allRows); return; }
+    
+    if (!q) { 
+      renderCards(allRows);
+      // Kembalikan jumlah baris ke total semula
+      document.getElementById('count-badge').textContent = allRows.length + ' baris';
+      
+      // Jalankan kembali auto-refresh jika fitur refresh aktif
+      if (REFRESH && REFRESH > 0) {
+        startRefresh(); 
+      }
+      return; 
+    }
+    
     const ql = q.toLowerCase();
-    renderCards(allRows.filter(row=>row.some(c=>String(c).toLowerCase().includes(ql))));
+    // Filter data agar kebal dari error null/undefined
+    const filteredRows = allRows.filter(row => 
+      row.some(c => c !== null && c !== undefined && String(c).toLowerCase().includes(ql))
+    );
+    
+    renderCards(filteredRows);
+    
+    // UPDATE: Tampilkan jumlah baris yang cocok dengan hasil filter
+    document.getElementById('count-badge').textContent = filteredRows.length + ' baris';
+    
+    // UPDATE: Matikan/pause auto-refresh selama user sedang mencari data
+    if (refreshTimer) {
+      clearInterval(refreshTimer);
+      const label = document.getElementById('refresh-label');
+      const pb = document.getElementById('progress-bar');
+      label.textContent = 'Auto-refresh dijeda (sedang mencari)';
+      pb.style.width = '0%';
+    }
   }
 
+  // Tambahkan fungsi baru ini di bawah filterCards masbro!
   function manualRefresh() {
+    // Bersihkan kolom pencarian saat tombol refresh diklik
+    document.getElementById('search-d').value = '';
+    document.getElementById('search-m').value = '';
+    
+    // Muat ulang data terbaru dari Google Sheets
     loadData(false);
-    resetRefreshTimer();
+    
+    // Aktifkan dan reset kembali hitungan mundur auto-refresh dari awal
+    if (REFRESH && REFRESH > 0) {
+      startRefresh();
+    }
   }
 
   // Auto-refresh
