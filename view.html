@@ -85,12 +85,13 @@
     .progress-bar { height:2px; background:var(--gold); position:fixed; top:54px; left:0; z-index:49; transition:width linear; width:0; }
 
     @media(max-width:600px) {
-      .search-wrap { display:none; }
-      .mobile-search { display:block; }
-      .topbar { height:50px; }
-      .progress-bar { top:50px; }
-      .brand span { display:none; }
-    }
+  .search-wrap { display:none; }
+  .mobile-search { display:block; }
+  .mobile-search .search-wrap { display:block !important; } 
+  .topbar { height:50px; }
+  .progress-bar { top:50px; }
+  .brand span { display:none; }
+}
   </style>
 </head>
 <body>
