@@ -77,11 +77,32 @@
     .mobile-search .search-input { background:var(--surface2); border-color:var(--border); color:var(--text); }
     .mobile-search .search-input::placeholder { color:var(--muted); }
 
+    /* Filter indicator */
+    .filter-bar { background:rgba(46,64,112,.08); border-bottom:1px solid rgba(46,64,112,.12); padding:6px 1.25rem; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--navy3); flex-wrap:wrap; }
+    .filter-bar.hidden { display:none; }
+    .filter-tag { background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:500; }
+    .filter-clear { color:var(--muted); cursor:pointer; font-size:11px; margin-left:auto; text-decoration:underline; }
+
+    /* Export button */
+    .btn-export { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.8); padding:6px 11px; border-radius:var(--radius); cursor:pointer; font-size:12.5px; display:flex; align-items:center; gap:5px; font-family:'Plus Jakarta Sans',sans-serif; transition:background .15s; white-space:nowrap; }
+    .btn-export:hover { background:rgba(255,255,255,.2); }
+
+    /* Print / PDF styles */
+    @media print {
+      .topbar, .mobile-search, .refresh-bar, .filter-bar, .footer, .progress-bar { display:none !important; }
+      body { background:#fff; }
+      .main { padding:.5rem; }
+      .card-grid { grid-template-columns: repeat(2, 1fr); gap:10px; }
+      .card { break-inside:avoid; box-shadow:none; border:1px solid #ccc; }
+      .card-head { background:#1a2744 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .info-bar { margin-bottom:.75rem; }
+      .print-header { display:block !important; text-align:center; margin-bottom:1rem; }
+    }
+    .print-header { display:none; }
+
     /* Footer */
     .footer { text-align:center; padding:1.5rem; font-size:11.5px; color:var(--muted); border-top:1px solid var(--border); margin-top:2rem; }
     .footer a { color:var(--navy3); text-decoration:none; }
-
-    /* Progress bar refresh */
     .progress-bar { height:2px; background:var(--gold); position:fixed; top:54px; left:0; z-index:49; transition:width linear; width:0; }
 
     @media(max-width:600px) {
@@ -109,6 +130,9 @@
   </div>
   <div class="topbar-right">
     <span class="count-badge" id="count-badge">—</span>
+    <button class="btn-export" onclick="exportPDF()" title="Export PDF">
+      <i class="ti ti-file-type-pdf"></i> PDF
+    </button>
     <button class="btn-icon" id="btn-refresh" onclick="manualRefresh()" title="Muat ulang">
       <i class="ti ti-refresh"></i>
     </button>
@@ -125,6 +149,16 @@
 <div class="refresh-bar hidden" id="refresh-bar">
   <i class="ti ti-clock"></i>
   <span id="refresh-label">Auto-refresh aktif</span>
+</div>
+
+<div class="filter-bar hidden" id="filter-bar">
+  <i class="ti ti-filter" style="font-size:13px"></i>
+  <span id="filter-tags"></span>
+</div>
+
+<div class="print-header" id="print-header">
+  <h2 style="font-family:'Instrument Serif',serif;color:#1a2744" id="ph-title"></h2>
+  <p style="font-size:12px;color:#7a85a0;margin-top:4px" id="ph-sub"></p>
 </div>
 
 <div class="main">
@@ -144,12 +178,14 @@
 
 <script>
   const P = new URLSearchParams(window.location.search);
-  const SCRIPT  = P.get('script') || '';
-  const SS_ID   = P.get('ssId')   || '';
-  const SHEET   = P.get('sheet')  || 'Sheet1';
-  const COLS    = P.get('cols')   ? P.get('cols').split(',').map(Number) : null;
-  const TITLE   = P.get('title')  || '';
-  const REFRESH = parseInt(P.get('refresh') || '0');
+  const SCRIPT   = P.get('script') || '';
+  const SS_ID    = P.get('ssId')   || '';
+  const SHEET    = P.get('sheet')  || 'Sheet1';
+  const COLS     = P.get('cols')   ? P.get('cols').split(',').map(Number) : null;
+  const TITLE    = P.get('title')  || '';
+  const REFRESH  = parseInt(P.get('refresh') || '0');
+  const FILTERS  = P.get('filters') ? JSON.parse(P.get('filters')) : [];
+  const FKEYWORD = P.get('fkeyword') || '';
 
   let allRows=[], headers=[], visibleCols=[], refreshTimer=null, refreshCountdown=0;
 
@@ -206,6 +242,35 @@
 
       headers = rows[0];
       allRows = rows.slice(1).filter(row=>row.some(c=>String(c).trim()!==''));
+
+      // Apply admin-set filters
+      let filteredByAdmin = allRows;
+      if (FILTERS.length > 0 || FKEYWORD) {
+        filteredByAdmin = allRows.filter(row => {
+          // Column filters (AND logic between rules, OR within values)
+          const colPass = FILTERS.every(f => {
+            const vals = String(f.val).split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
+            if (!vals.length) return true;
+            const cell = String(row[f.col]||'').toLowerCase();
+            return vals.some(v => cell.includes(v));
+          });
+          // Keyword filter
+          const kwPass = !FKEYWORD || row.some(c=>String(c).toLowerCase().includes(FKEYWORD.toLowerCase()));
+          return colPass && kwPass;
+        });
+        // Show filter bar
+        const fb = document.getElementById('filter-bar');
+        const ft = document.getElementById('filter-tags');
+        fb.classList.remove('hidden');
+        const tags = [];
+        FILTERS.forEach(f => {
+          const colName = headers[f.col] || 'Kolom '+f.col;
+          tags.push(`<span class="filter-tag">${colName}: ${f.val}</span>`);
+        });
+        if (FKEYWORD) tags.push(`<span class="filter-tag">keyword: "${FKEYWORD}"</span>`);
+        ft.innerHTML = tags.join(' ');
+      }
+      allRows = filteredByAdmin;
       visibleCols = (COLS&&COLS.length) ? COLS.filter(i=>i<headers.length) : headers.map((_,i)=>i);
 
       const displayTitle = TITLE || SHEET;
@@ -213,7 +278,9 @@
       document.getElementById('info-sub').textContent = allRows.length + ' data';
       document.getElementById('count-badge').textContent = allRows.length + ' baris';
       document.title = displayTitle + ' — SheetView';
-
+      // Update print header
+      document.getElementById('ph-title').textContent = displayTitle;
+      document.getElementById('ph-sub').textContent = `${allRows.length} data · Dicetak ${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
       renderCards(allRows);
     } catch(e) {
       grid.innerHTML = `<div class="state"><i class="ti ti-wifi-off"></i><p>Gagal memuat data.<br>${e.message}</p></div>`;
@@ -286,6 +353,17 @@
       label.textContent = 'Auto-refresh dijeda (sedang mencari)';
       pb.style.width = '0%';
     }
+  }
+
+  function exportPDF() {
+    // Update print subtitle with current filter state
+    const q = document.getElementById('search-d').value.trim();
+    const visibleCards = document.querySelectorAll('#card-grid .card').length;
+    const sub = q
+      ? `${visibleCards} data (filter: "${q}") · Dicetak ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`
+      : `${visibleCards} data · Dicetak ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`;
+    document.getElementById('ph-sub').textContent = sub;
+    window.print();
   }
 
   // Tambahkan fungsi baru ini di bawah filterCards masbro!

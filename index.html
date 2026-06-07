@@ -75,7 +75,23 @@
     @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
 
     .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    @media(max-width:480px) { .main{margin:1rem auto;} .page-title{font-size:22px;} .row2{grid-template-columns:1fr;} }
+
+    /* Filter rules */
+    .filter-list { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
+    .filter-rule { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px 10px; }
+    .filter-rule select, .filter-rule input { border:none; background:transparent; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; color:var(--text); outline:none; }
+    .filter-rule select { flex-shrink:0; font-weight:500; color:var(--navy3); cursor:pointer; max-width:140px; }
+    .filter-rule .fi-val { flex:1; border-left:1px solid var(--border); padding-left:8px; min-width:0; }
+    .filter-rule .fi-val::placeholder { color:var(--muted); }
+    .filter-rule .btn-del { background:none; border:none; cursor:pointer; color:var(--muted); font-size:15px; padding:0 2px; display:flex; align-items:center; transition:color .15s; flex-shrink:0; }
+    .filter-rule .btn-del:hover { color:#e74c3c; }
+    .btn-add-filter { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border:1px dashed var(--border2); border-radius:var(--radius); background:transparent; color:var(--muted); font-size:12.5px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all .15s; }
+    .btn-add-filter:hover { border-color:var(--navy3); color:var(--navy3); }
+    .filter-keyword { width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface2); color:var(--text); font-size:13.5px; font-family:'Plus Jakarta Sans',sans-serif; margin-top:10px; }
+    .filter-keyword:focus { outline:none; border-color:var(--navy3); }
+    .filter-preview { font-size:11.5px; color:var(--muted); margin-top:8px; padding:6px 10px; background:var(--surface2); border-radius:6px; border-left:3px solid var(--gold); display:none; }
+
+    @media(max-width:480px) { .main{margin:1rem auto;} .page-title{font-size:22px;} .row2{grid-template-columns:1fr;} .filter-rule{flex-wrap:wrap;} }
   </style>
 </head>
 <body>
@@ -160,9 +176,31 @@
     </div>
   </div>
 
-  <!-- Step 6: Share -->
+  <!-- Step 6: Filter -->
+  <div class="card" id="sec-filter">
+    <div class="card-title"><span class="step-num">6</span><i class="ti ti-filter"></i> Filter Data (Opsional)</div>
+    <p class="field-hint" style="margin-bottom:.9rem">Filter ini dikunci di link share — viewer hanya melihat data yang lolos filter.</p>
+
+    <label class="field-label">Filter per kolom</label>
+    <div class="filter-list" id="filter-list"></div>
+    <button class="btn-add-filter" onclick="addFilterRule()">
+      <i class="ti ti-plus"></i> Tambah filter kolom
+    </button>
+
+    <div style="margin-top:12px">
+      <label class="field-label">Filter keyword global</label>
+      <input class="filter-keyword" id="in-fkeyword" type="text"
+        placeholder="cth: Kepala Dinas (kosongkan jika tidak perlu)"
+        oninput="updateFilterPreview()" />
+      <p class="field-hint">Data ditampilkan hanya jika mengandung keyword ini di kolom manapun.</p>
+    </div>
+
+    <div class="filter-preview" id="filter-preview"></div>
+  </div>
+
+  <!-- Step 7: Share -->
   <div class="card" id="sec-share">
-    <div class="card-title"><span class="step-num">6</span><i class="ti ti-link"></i> Link Share</div>
+    <div class="card-title"><span class="step-num">7</span><i class="ti ti-link"></i> Link Share</div>
     <p class="field-hint" style="margin-bottom:.9rem">Bagikan link ini — penerima langsung melihat data tanpa perlu setting apapun.</p>
     <div class="share-box">
       <div class="share-url" id="share-url">—</div>
@@ -178,7 +216,7 @@
 
 <script>
   const LS = { get: k => localStorage.getItem('sv_'+k)||'', set: (k,v) => localStorage.setItem('sv_'+k,v) };
-  let headers=[], visibleCols=[];
+  let headers=[], visibleCols=[], filterRules=[];
 
   function extractId(s) {
     s=s.trim();
@@ -195,6 +233,7 @@
     document.getElementById('in-script').value = LS.get('script');
     document.getElementById('in-ss').value = LS.get('ss');
     document.getElementById('in-title').value = LS.get('title');
+    document.getElementById('in-fkeyword').value = LS.get('fkeyword');
     const savedRefresh = LS.get('refresh');
     if (savedRefresh) document.getElementById('in-refresh').value = savedRefresh;
     if (LS.get('script') && LS.get('ss') && LS.get('sheet')) restoreAll();
@@ -260,6 +299,11 @@
       LS.set('sheet', sheet);
       document.getElementById('sec-cols').style.cssText='display:block!important';
       document.getElementById('sec-customize').style.cssText='display:block!important';
+      document.getElementById('sec-filter').style.cssText='display:block!important';
+      // Restore saved filter rules
+      const savedRules = LS.get('filterRules');
+      if (savedRules && !silent) { filterRules=[]; }
+      else if (savedRules && silent) { filterRules=JSON.parse(savedRules); renderFilterRules(); }
       generateLink();
     } catch(e) { if(!silent) showToast('Gagal ambil header: '+e.message); }
   }
@@ -301,6 +345,15 @@
     if (title) p.set('title', title);
     if (refresh !== '0') p.set('refresh', refresh);
 
+    // Encode filter rules
+    const activeRules = filterRules.filter(r => r.col !== '' && r.val.trim() !== '');
+    if (activeRules.length > 0) p.set('filters', JSON.stringify(activeRules));
+    const fkeyword = document.getElementById('in-fkeyword').value.trim();
+    if (fkeyword) p.set('fkeyword', fkeyword);
+
+    LS.set('filterRules', JSON.stringify(filterRules));
+    LS.set('fkeyword', fkeyword);
+
     const absUrl = getBaseUrl() + 'view.html?' + p.toString();
     document.getElementById('share-url').textContent = absUrl;
     document.getElementById('sec-share').style.cssText='display:block!important';
@@ -321,6 +374,65 @@
     if (!url||url==='—') { showToast('Generate link dulu.'); return; }
     window.open(url, '_blank');
   }
+
+  // ── Filter functions ──────────────────────────────
+  function addFilterRule(colIdx='', val='') {
+    filterRules.push({ col: colIdx, val: val });
+    renderFilterRules();
+    generateLink();
+  }
+
+  function removeFilterRule(i) {
+    filterRules.splice(i, 1);
+    renderFilterRules();
+    generateLink();
+  }
+
+  function renderFilterRules() {
+    const list = document.getElementById('filter-list');
+    if (!filterRules.length) { list.innerHTML=''; updateFilterPreview(); return; }
+    list.innerHTML = filterRules.map((r, i) => {
+      const opts = headers.map((h, hi) =>
+        `<option value="${hi}" ${r.col===hi?'selected':''}>${h||'Kolom '+(hi+1)}</option>`
+      ).join('');
+      return `<div class="filter-rule" id="fr-${i}">
+        <select onchange="updateRule(${i},'col',parseInt(this.value))">${opts}</select>
+        <input class="fi-val" type="text" placeholder="nilai yang diizinkan (pisah koma)"
+          value="${r.val}" oninput="updateRule(${i},'val',this.value)" />
+        <button class="btn-del" onclick="removeFilterRule(${i})" title="Hapus">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>`;
+    }).join('');
+    updateFilterPreview();
+  }
+
+  function updateRule(i, key, val) {
+    filterRules[i][key] = val;
+    generateLink();
+    updateFilterPreview();
+  }
+
+  function updateFilterPreview() {
+    const prev = document.getElementById('filter-preview');
+    const activeRules = filterRules.filter(r => r.col !== '' && String(r.val).trim() !== '');
+    const kw = document.getElementById('in-fkeyword') ? document.getElementById('in-fkeyword').value.trim() : '';
+    const parts = [];
+    activeRules.forEach(r => {
+      const colName = headers[r.col] || 'Kolom '+r.col;
+      const vals = r.val.split(',').map(v=>v.trim()).filter(Boolean);
+      if (vals.length) parts.push(`<strong>${colName}</strong> = ${vals.map(v=>`"${v}"`).join(' atau ')}`);
+    });
+    if (kw) parts.push(`keyword "<strong>${kw}</strong>"`);
+    if (parts.length) {
+      prev.style.display = 'block';
+      prev.innerHTML = '🔍 Hanya tampilkan: ' + parts.join(' &amp; ');
+    } else {
+      prev.style.display = 'none';
+    }
+    generateLink();
+  }
+  // ─────────────────────────────────────────────────
 
   function showToast(msg) {
     const t=document.getElementById('toast');
