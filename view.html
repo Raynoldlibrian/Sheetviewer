@@ -19,100 +19,137 @@
     }
     body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
-    /* Topbar */
-    .topbar { background:var(--navy); height:54px; display:flex; align-items:center; padding:0 1.25rem; gap:12px; position:sticky; top:0; z-index:50; box-shadow:0 2px 12px rgba(26,39,68,.2); }
-    .brand { display:flex; align-items:center; gap:8px; color:#fff; font-family:'Instrument Serif',serif; font-style:italic; font-size:15px; white-space:nowrap; }
+    /* ── Topbar ── */
+    .topbar { background:var(--navy); height:54px; display:flex; align-items:center; padding:0 1.25rem; gap:10px; position:sticky; top:0; z-index:50; box-shadow:0 2px 12px rgba(26,39,68,.2); }
+    .brand { display:flex; align-items:center; gap:8px; color:#fff; font-family:'Instrument Serif',serif; font-style:italic; font-size:15px; white-space:nowrap; flex-shrink:0; }
     .brand-icon { width:28px; height:28px; background:linear-gradient(135deg,var(--gold),var(--gold2)); border-radius:7px; display:flex; align-items:center; justify-content:center; font-style:normal; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; color:var(--navy); flex-shrink:0; }
     .search-wrap { flex:1; position:relative; max-width:440px; margin:0 auto; }
     .search-wrap i { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,.4); font-size:15px; pointer-events:none; }
-    .search-input { width:100%; padding:7px 12px 7px 34px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); border-radius:var(--radius); color:#fff; font-size:13px; font-family:'Plus Jakarta Sans',sans-serif; }
+    .search-input { width:100%; padding:8px 12px 8px 34px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); border-radius:var(--radius); color:#fff; font-size:13px; font-family:'Plus Jakarta Sans',sans-serif; }
     .search-input::placeholder { color:rgba(255,255,255,.4); }
-    .search-input:focus { outline:none; background:rgba(255,255,255,.15); }
-    .topbar-right { display:flex; align-items:center; gap:8px; margin-left:auto; }
+    .search-input:focus { outline:none; background:rgba(255,255,255,.18); }
+    .topbar-right { display:flex; align-items:center; gap:6px; margin-left:auto; flex-shrink:0; }
     .count-badge { background:rgba(255,255,255,.1); color:rgba(255,255,255,.65); font-size:11px; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,.15); white-space:nowrap; }
-    .btn-icon { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.8); width:34px; height:34px; border-radius:var(--radius); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:background .15s; }
+    .btn-icon { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.8); width:34px; height:34px; border-radius:var(--radius); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:background .15s; flex-shrink:0; }
     .btn-icon:hover { background:rgba(255,255,255,.2); }
     .btn-icon.spinning i { animation:spin .6s linear infinite; }
     @keyframes spin { to{transform:rotate(360deg)} }
+    .btn-export { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.8); padding:6px 11px; border-radius:var(--radius); cursor:pointer; font-size:12.5px; display:flex; align-items:center; gap:5px; font-family:'Plus Jakarta Sans',sans-serif; transition:background .15s; white-space:nowrap; flex-shrink:0; }
+    .btn-export:hover { background:rgba(255,255,255,.2); }
 
-    /* Refresh bar */
-    .refresh-bar { background:rgba(201,168,76,.15); border-bottom:1px solid rgba(201,168,76,.25); padding:6px 1.25rem; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--gold); }
-    .refresh-bar i { font-size:13px; }
+    /* ── Sub-bars ── */
+    .refresh-bar { background:rgba(201,168,76,.15); border-bottom:1px solid rgba(201,168,76,.25); padding:5px 1.25rem; display:flex; align-items:center; gap:8px; font-size:12px; color:#b8922a; }
     .refresh-bar.hidden { display:none; }
+    .filter-bar { background:rgba(46,64,112,.07); border-bottom:1px solid rgba(46,64,112,.1); padding:5px 1.25rem; display:flex; align-items:center; gap:6px; font-size:12px; color:var(--navy3); flex-wrap:wrap; }
+    .filter-bar.hidden { display:none; }
+    .filter-tag { background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:500; }
+    .progress-bar { height:2px; background:var(--gold); position:fixed; top:54px; left:0; z-index:49; transition:width linear; width:0; }
 
-    /* Main */
+    /* ── Mobile search bar ── */
+    .mobile-search { display:none; background:var(--navy2); padding:8px 1rem; }
+    .mobile-search .search-wrap { max-width:100%; margin:0; }
+    .mobile-search .search-wrap i { color:rgba(255,255,255,.4); }
+    .mobile-search .search-input { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.15); color:#fff; font-size:14px; padding:9px 12px 9px 34px; }
+    .mobile-search .search-input::placeholder { color:rgba(255,255,255,.35); }
+
+    /* ── Main ── */
     .main { padding:1.25rem 1rem 3rem; max-width:1280px; margin:0 auto; }
-    .info-bar { display:flex; align-items:baseline; gap:10px; margin-bottom:1.25rem; flex-wrap:wrap; }
+    .info-bar { display:flex; align-items:baseline; gap:10px; margin-bottom:1.1rem; flex-wrap:wrap; }
     .info-title { font-family:'Instrument Serif',serif; font-size:22px; color:var(--navy); }
     .info-sub { font-size:12px; color:var(--muted); }
 
-    /* Cards */
+    /* ── Card grid ── */
     .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+
     .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; box-shadow:0 1px 4px rgba(26,39,68,.05); transition:transform .15s,box-shadow .15s; }
     .card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(26,39,68,.09); }
-    .card-head { background:var(--navy); padding:13px 16px; position:relative; overflow:hidden; }
-    .card-head::after { content:''; position:absolute; top:0; right:0; width:60px; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.04)); }
+    .card-head { background:var(--navy); padding:12px 15px; position:relative; overflow:hidden; display:flex; justify-content:space-between; align-items:flex-start; }
+    .card-head::after { content:''; position:absolute; top:0; right:0; width:60px; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.04)); pointer-events:none; }
+    .card-head-left { flex:1; min-width:0; }
     .card-head-no { font-size:10px; color:rgba(255,255,255,.35); font-weight:600; text-transform:uppercase; letter-spacing:.6px; margin-bottom:3px; }
     .card-head-title { font-size:14px; font-weight:600; color:#fff; line-height:1.4; }
-    .card-body { padding:13px 16px; }
-    .row-item { margin-bottom:9px; padding-bottom:9px; border-bottom:1px solid var(--border); }
+    .btn-detail { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.8); border-radius:6px; padding:3px 8px; font-size:11px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; white-space:nowrap; position:relative; z-index:1; transition:background .15s; flex-shrink:0; margin-left:8px; margin-top:2px; }
+    .btn-detail:hover { background:rgba(255,255,255,.25); color:#fff; }
+
+    .card-body { padding:12px 15px; }
+    .row-item { margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--border); }
     .row-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
     .row-label { font-size:10px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:2px; }
     .row-value { font-size:13px; color:var(--text); line-height:1.5; word-break:break-word; }
     .row-value.date-val { color:var(--navy3); font-weight:500; }
 
-    /* States */
+    /* ── States ── */
     .state { grid-column:1/-1; text-align:center; padding:4rem 1rem; color:var(--muted); }
     .state i { font-size:36px; display:block; margin-bottom:12px; opacity:.3; }
     .state p { font-size:14px; line-height:1.7; }
 
-    /* Skeleton */
+    /* ── Skeleton ── */
     .skel { background:linear-gradient(90deg,var(--border) 25%,var(--surface2) 50%,var(--border) 75%); background-size:200% 100%; animation:shimmer 1.2s infinite; border-radius:var(--radius-lg); height:160px; }
     @keyframes shimmer { to{background-position:-200% 0} }
 
-    /* Mobile search fallback */
-    .mobile-search { display:none; padding:.75rem 1rem 0; }
-    .mobile-search .search-wrap { max-width:100%; margin:0; }
-    .mobile-search .search-wrap i { color:var(--muted); }
-    .mobile-search .search-input { background:var(--surface2); border-color:var(--border); color:var(--text); }
-    .mobile-search .search-input::placeholder { color:var(--muted); }
+    /* ── Modal Detail ── */
+    .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:200; opacity:0; pointer-events:none; transition:opacity .25s; }
+    .modal-backdrop.open { opacity:1; pointer-events:all; }
+    .modal { position:fixed; bottom:0; left:0; right:0; background:var(--surface); border-radius:20px 20px 0 0; z-index:201; max-height:85vh; display:flex; flex-direction:column; transform:translateY(100%); transition:transform .3s cubic-bezier(.32,.72,0,1); }
+    .modal.open { transform:translateY(0); }
+    .modal-handle { width:40px; height:4px; background:var(--border2); border-radius:2px; margin:10px auto 0; flex-shrink:0; }
+    .modal-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); flex-shrink:0; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .modal-head-no { font-size:10px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.6px; margin-bottom:3px; }
+    .modal-head-title { font-family:'Instrument Serif',serif; font-size:18px; color:var(--navy); line-height:1.35; }
+    .modal-close { background:var(--surface2); border:1px solid var(--border); width:30px; height:30px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--muted); flex-shrink:0; }
+    .modal-close:hover { background:var(--border); }
+    .modal-body { padding:14px 18px 24px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+    .modal-row { padding:10px 0; border-bottom:1px solid var(--border); }
+    .modal-row:last-child { border-bottom:none; }
+    .modal-label { font-size:10.5px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
+    .modal-value { font-size:14px; color:var(--text); line-height:1.55; word-break:break-word; }
+    .modal-value.date-val { color:var(--navy3); font-weight:500; }
 
-    /* Filter indicator */
-    .filter-bar { background:rgba(46,64,112,.08); border-bottom:1px solid rgba(46,64,112,.12); padding:6px 1.25rem; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--navy3); flex-wrap:wrap; }
-    .filter-bar.hidden { display:none; }
-    .filter-tag { background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:500; }
-    .filter-clear { color:var(--muted); cursor:pointer; font-size:11px; margin-left:auto; text-decoration:underline; }
-
-    /* Export button */
-    .btn-export { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.8); padding:6px 11px; border-radius:var(--radius); cursor:pointer; font-size:12.5px; display:flex; align-items:center; gap:5px; font-family:'Plus Jakarta Sans',sans-serif; transition:background .15s; white-space:nowrap; }
-    .btn-export:hover { background:rgba(255,255,255,.2); }
-
-    /* Print / PDF styles */
-    @media print {
-      .topbar, .mobile-search, .refresh-bar, .filter-bar, .footer, .progress-bar { display:none !important; }
-      body { background:#fff; }
-      .main { padding:.5rem; }
-      .card-grid { grid-template-columns: repeat(2, 1fr); gap:10px; }
-      .card { break-inside:avoid; box-shadow:none; border:1px solid #ccc; }
-      .card-head { background:#1a2744 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-      .info-bar { margin-bottom:.75rem; }
-      .print-header { display:block !important; text-align:center; margin-bottom:1rem; }
+    /* ── Desktop modal override — centered dialog ── */
+    @media(min-width:700px) {
+      .modal { bottom:auto; top:50%; left:50%; right:auto; transform:translate(-50%,-40%); width:480px; max-height:80vh; border-radius:var(--radius-lg); box-shadow:0 20px 60px rgba(26,39,68,.2); }
+      .modal.open { transform:translate(-50%,-50%); }
+      .modal-handle { display:none; }
     }
-    .print-header { display:none; }
 
-    /* Footer */
+    /* ── Footer ── */
     .footer { text-align:center; padding:1.5rem; font-size:11.5px; color:var(--muted); border-top:1px solid var(--border); margin-top:2rem; }
     .footer a { color:var(--navy3); text-decoration:none; }
-    .progress-bar { height:2px; background:var(--gold); position:fixed; top:54px; left:0; z-index:49; transition:width linear; width:0; }
 
+    /* ── Print ── */
+    .print-header { display:none; }
+    @media print {
+      .topbar,.mobile-search,.refresh-bar,.filter-bar,.footer,.progress-bar,.modal-backdrop,.modal { display:none !important; }
+      body { background:#fff; }
+      .main { padding:.5rem; }
+      .card-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+      .card { break-inside:avoid; box-shadow:none; border:1px solid #ccc; }
+      .card-head { background:#1a2744 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .btn-detail { display:none; }
+      .info-bar { margin-bottom:.75rem; }
+      .print-header { display:block !important; text-align:center; margin-bottom:1rem; border-bottom:1px solid #ccc; padding-bottom:.75rem; }
+    }
+
+    /* ── Mobile responsive ── */
     @media(max-width:600px) {
-  .search-wrap { display:none; }
-  .mobile-search { display:block; }
-  .mobile-search .search-wrap { display:block !important; } 
-  .topbar { height:50px; }
-  .progress-bar { top:50px; }
-  .brand span { display:none; }
-}
+      .topbar { height:50px; padding:0 .9rem; gap:8px; }
+      .search-wrap { display:none; }
+      .mobile-search { display:block; }
+      .progress-bar { top:50px; }
+      .brand span { display:none; }
+      .count-badge { display:none; }
+      .main { padding:1rem .75rem 3rem; }
+      .card-grid { grid-template-columns:1fr; gap:10px; }
+      .card-head-title { font-size:15px; }
+      .card-body { padding:12px 14px; }
+      .info-title { font-size:19px; }
+    }
+
+    /* Tap highlight remove on mobile */
+    @media(hover:none) {
+      .card:hover { transform:none; box-shadow:0 1px 4px rgba(26,39,68,.05); }
+      .card:active { background:var(--surface2); }
+    }
   </style>
 </head>
 <body>
@@ -130,15 +167,14 @@
   </div>
   <div class="topbar-right">
     <span class="count-badge" id="count-badge">—</span>
-    <button class="btn-export" onclick="exportPDF()" title="Export PDF">
-      <i class="ti ti-file-type-pdf"></i> PDF
-    </button>
+    <button class="btn-export" onclick="exportPDF()"><i class="ti ti-file-type-pdf"></i> PDF</button>
     <button class="btn-icon" id="btn-refresh" onclick="manualRefresh()" title="Muat ulang">
       <i class="ti ti-refresh"></i>
     </button>
   </div>
 </div>
 
+<!-- Mobile search -->
 <div class="mobile-search">
   <div class="search-wrap">
     <i class="ti ti-search"></i>
@@ -152,12 +188,13 @@
 </div>
 
 <div class="filter-bar hidden" id="filter-bar">
-  <i class="ti ti-filter" style="font-size:13px"></i>
+  <i class="ti ti-filter" style="font-size:13px;flex-shrink:0"></i>
   <span id="filter-tags"></span>
 </div>
 
+<!-- Print header -->
 <div class="print-header" id="print-header">
-  <h2 style="font-family:'Instrument Serif',serif;color:#1a2744" id="ph-title"></h2>
+  <h2 style="font-family:'Instrument Serif',serif;color:#1a2744;font-size:22px" id="ph-title"></h2>
   <p style="font-size:12px;color:#7a85a0;margin-top:4px" id="ph-sub"></p>
 </div>
 
@@ -173,7 +210,21 @@
 </div>
 
 <div class="footer">
-  Data diambil langsung dari Google Sheets &middot; <a href="index.html">SheetView Admin</a> - Raynold
+  Data diambil langsung dari Google Sheets · <a href="index.html">SheetView Admin</a> - Raynold
+</div>
+
+<!-- Modal Detail -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal()"></div>
+<div class="modal" id="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-head">
+    <div>
+      <div class="modal-head-no" id="modal-no"></div>
+      <div class="modal-head-title" id="modal-title"></div>
+    </div>
+    <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="modal-body" id="modal-body"></div>
 </div>
 
 <script>
@@ -184,14 +235,13 @@
   const COLS     = P.get('cols')   ? P.get('cols').split(',').map(Number) : null;
   const TITLE    = P.get('title')  || '';
   const REFRESH  = parseInt(P.get('refresh') || '0');
-  const FILTERS  = P.get('filters') ? JSON.parse(P.get('filters')) : [];
+  const FILTERS  = P.get('filters') ? JSON.parse(decodeURIComponent(P.get('filters'))) : [];
   const FKEYWORD = P.get('fkeyword') || '';
 
   let allRows=[], headers=[], visibleCols=[], refreshTimer=null, refreshCountdown=0;
-
-  // Set page title
   if (TITLE) document.title = TITLE + ' — SheetView';
 
+  // ── Format helpers ──
   function formatDate(val) {
     if (!val) return val;
     const s = String(val).trim();
@@ -202,19 +252,20 @@
     }
     const mdy = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
     if (mdy) {
-      const d = new Date(parseInt(mdy[3]), parseInt(mdy[1])-1, parseInt(mdy[2]));
+      const d = new Date(parseInt(mdy[3]),parseInt(mdy[1])-1,parseInt(mdy[2]));
       if (!isNaN(d)) return d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     }
     return s;
   }
 
-  function isDateLike(idx, sampleVal) {
+  function isDateLike(idx, val) {
     const h = (headers[idx]||'').toLowerCase();
     if (h.includes('tanggal')||h.includes('date')||h.includes('tgl')) return true;
-    if (String(sampleVal).match(/^\d{4}-\d{2}-\d{2}T/)) return true;
+    if (String(val).match(/^\d{4}-\d{2}-\d{2}T/)) return true;
     return false;
   }
 
+  // ── Load data ──
   async function loadData(showSkeleton=true) {
     const grid = document.getElementById('card-grid');
     if (showSkeleton) {
@@ -222,55 +273,47 @@
       document.getElementById('info-title').textContent = TITLE || 'Memuat data...';
       document.getElementById('count-badge').textContent = '—';
     }
-
     if (!SCRIPT||!SS_ID) {
-      grid.innerHTML = '<div class="state"><i class="ti ti-alert-circle"></i><p>Parameter tidak lengkap.<br>Gunakan link yang dibuat dari halaman Setelan.</p></div>';
+      grid.innerHTML = '<div class="state"><i class="ti ti-alert-circle"></i><p>Parameter tidak lengkap.<br>Gunakan link dari halaman Setelan.</p></div>';
       return;
     }
-
-    // Spin icon
     const btnR = document.getElementById('btn-refresh');
     btnR.classList.add('spinning');
-
     try {
       const r = await fetch(`${SCRIPT}?ssId=${encodeURIComponent(SS_ID)}&sheet=${encodeURIComponent(SHEET)}`);
       const d = await r.json();
       if (d.error) { grid.innerHTML=`<div class="state"><i class="ti ti-x"></i><p>Error: ${d.error}</p></div>`; return; }
-
       const rows = d.data||[];
       if (rows.length<2) { grid.innerHTML='<div class="state"><i class="ti ti-table-off"></i><p>Sheet kosong atau belum ada data.</p></div>'; return; }
 
       headers = rows[0];
-      allRows = rows.slice(1).filter(row=>row.some(c=>String(c).trim()!==''));
+      let filtered = rows.slice(1).filter(row=>row.some(c=>String(c).trim()!==''));
 
-      // Apply admin-set filters
-      let filteredByAdmin = allRows;
+      // Apply admin filters
       if (FILTERS.length > 0 || FKEYWORD) {
-        filteredByAdmin = allRows.filter(row => {
-          // Column filters (AND logic between rules, OR within values)
+        filtered = filtered.filter(row => {
           const colPass = FILTERS.every(f => {
             const vals = String(f.val).split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
             if (!vals.length) return true;
             const cell = String(row[f.col]||'').toLowerCase();
-            return vals.some(v => cell.includes(v));
+            return vals.some(v=>cell.includes(v));
           });
-          // Keyword filter
           const kwPass = !FKEYWORD || row.some(c=>String(c).toLowerCase().includes(FKEYWORD.toLowerCase()));
           return colPass && kwPass;
         });
         // Show filter bar
         const fb = document.getElementById('filter-bar');
-        const ft = document.getElementById('filter-tags');
         fb.classList.remove('hidden');
         const tags = [];
         FILTERS.forEach(f => {
-          const colName = headers[f.col] || 'Kolom '+f.col;
-          tags.push(`<span class="filter-tag">${colName}: ${f.val}</span>`);
+          const cn = headers[f.col]||'Kolom '+f.col;
+          tags.push(`<span class="filter-tag">${cn}: ${f.val}</span>`);
         });
         if (FKEYWORD) tags.push(`<span class="filter-tag">keyword: "${FKEYWORD}"</span>`);
-        ft.innerHTML = tags.join(' ');
+        document.getElementById('filter-tags').innerHTML = tags.join(' ');
       }
-      allRows = filteredByAdmin;
+
+      allRows = filtered;
       visibleCols = (COLS&&COLS.length) ? COLS.filter(i=>i<headers.length) : headers.map((_,i)=>i);
 
       const displayTitle = TITLE || SHEET;
@@ -278,9 +321,8 @@
       document.getElementById('info-sub').textContent = allRows.length + ' data';
       document.getElementById('count-badge').textContent = allRows.length + ' baris';
       document.title = displayTitle + ' — SheetView';
-      // Update print header
       document.getElementById('ph-title').textContent = displayTitle;
-      document.getElementById('ph-sub').textContent = `${allRows.length} data · Dicetak ${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
+      document.getElementById('ph-sub').textContent = `${allRows.length} data · Dicetak ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`;
       renderCards(allRows);
     } catch(e) {
       grid.innerHTML = `<div class="state"><i class="ti ti-wifi-off"></i><p>Gagal memuat data.<br>${e.message}</p></div>`;
@@ -288,138 +330,138 @@
     btnR.classList.remove('spinning');
   }
 
+  // ── Render cards ──
   function renderCards(rows) {
     const grid = document.getElementById('card-grid');
     if (!rows.length) { grid.innerHTML='<div class="state"><i class="ti ti-search-off"></i><p>Tidak ada hasil yang cocok.</p></div>'; return; }
     const cols = visibleCols.length ? visibleCols : headers.map((_,i)=>i);
-    grid.innerHTML = rows.map((row,ri)=>{
+    // Map ke index di allRows supaya modal bisa akses row lengkap
+    grid.innerHTML = rows.map((row, ri) => {
       const ti = cols[0];
       const rawTitle = row[ti]!==undefined ? String(row[ti]).trim() : '';
       const title = isDateLike(ti,rawTitle) ? formatDate(rawTitle) : (rawTitle||`Data ${ri+1}`);
-      let body='';
+      let body = '';
       for (let k=1;k<cols.length;k++) {
-        const i=cols[k];
+        const i = cols[k];
         const raw = row[i]!==undefined ? String(row[i]).trim() : '';
         if (!raw) continue;
-        const isDate = isDateLike(i, raw);
+        const isDate = isDateLike(i,raw);
         body += `<div class="row-item">
           <div class="row-label">${headers[i]||'Kolom '+(i+1)}</div>
           <div class="row-value ${isDate?'date-val':''}">${isDate?formatDate(raw):raw}</div>
         </div>`;
       }
+      // Store row data as JSON in data attribute
+      const rowJson = encodeURIComponent(JSON.stringify(row));
       return `<div class="card">
         <div class="card-head">
-          <div class="card-head-no">${headers[ti]||'Kolom 1'} · #${ri+1}</div>
-          <div class="card-head-title">${title}</div>
+          <div class="card-head-left">
+            <div class="card-head-no">${headers[ti]||'Kolom 1'} · #${ri+1}</div>
+            <div class="card-head-title">${title}</div>
+          </div>
+          <button class="btn-detail" onclick="openModal(${ri+1},'${encodeURIComponent(title)}','${rowJson}')">
+            <i class="ti ti-maximize" style="font-size:10px;margin-right:3px"></i>#${ri+1}
+          </button>
         </div>
         <div class="card-body">${body||'<span style="font-size:12px;color:var(--muted)">—</span>'}</div>
       </div>`;
     }).join('');
   }
 
+  // ── Modal ──
+  function openModal(no, encodedTitle, encodedRow) {
+    const title = decodeURIComponent(encodedTitle);
+    const row = JSON.parse(decodeURIComponent(encodedRow));
+    document.getElementById('modal-no').textContent = `Detail · #${no}`;
+    document.getElementById('modal-title').textContent = title;
+
+    // Tampilkan SEMUA kolom (bukan hanya visibleCols) di modal
+    let bodyHtml = '';
+    headers.forEach((h, i) => {
+      const raw = row[i]!==undefined ? String(row[i]).trim() : '';
+      if (!raw) return;
+      const isDate = isDateLike(i, raw);
+      bodyHtml += `<div class="modal-row">
+        <div class="modal-label">${h||'Kolom '+(i+1)}</div>
+        <div class="modal-value ${isDate?'date-val':''}">${isDate?formatDate(raw):raw}</div>
+      </div>`;
+    });
+    document.getElementById('modal-body').innerHTML = bodyHtml || '<p style="color:var(--muted);font-size:13px">Tidak ada data.</p>';
+
+    document.getElementById('modal-backdrop').classList.add('open');
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal-backdrop').classList.remove('open');
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', e => { if (e.key==='Escape') closeModal(); });
+
+  // ── Filter / Search ──
   function filterCards(q) {
-    // Sync kedua input
     document.getElementById('search-d').value = q;
     document.getElementById('search-m').value = q;
-    
-    if (!q) { 
+    if (!q) {
       renderCards(allRows);
-      // Kembalikan jumlah baris ke total semula
       document.getElementById('count-badge').textContent = allRows.length + ' baris';
-      
-      // Jalankan kembali auto-refresh jika fitur refresh aktif
-      if (REFRESH && REFRESH > 0) {
-        startRefresh(); 
-      }
-      return; 
+      if (REFRESH > 0) startRefresh();
+      return;
     }
-    
     const ql = q.toLowerCase();
-    // Filter data agar kebal dari error null/undefined
-    const filteredRows = allRows.filter(row => 
-      row.some(c => c !== null && c !== undefined && String(c).toLowerCase().includes(ql))
-    );
-    
-    renderCards(filteredRows);
-    
-    // UPDATE: Tampilkan jumlah baris yang cocok dengan hasil filter
-    document.getElementById('count-badge').textContent = filteredRows.length + ' baris';
-    
-    // UPDATE: Matikan/pause auto-refresh selama user sedang mencari data
+    const filtered = allRows.filter(row => row.some(c=>c!=null&&String(c).toLowerCase().includes(ql)));
+    renderCards(filtered);
+    document.getElementById('count-badge').textContent = filtered.length + ' baris';
     if (refreshTimer) {
       clearInterval(refreshTimer);
-      const label = document.getElementById('refresh-label');
-      const pb = document.getElementById('progress-bar');
-      label.textContent = 'Auto-refresh dijeda (sedang mencari)';
-      pb.style.width = '0%';
+      document.getElementById('refresh-label').textContent = 'Auto-refresh dijeda (sedang mencari)';
+      document.getElementById('progress-bar').style.width = '0%';
     }
   }
 
+  // ── Export PDF ──
   function exportPDF() {
-    // Update print subtitle with current filter state
     const q = document.getElementById('search-d').value.trim();
-    const visibleCards = document.querySelectorAll('#card-grid .card').length;
-    const sub = q
-      ? `${visibleCards} data (filter: "${q}") · Dicetak ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`
-      : `${visibleCards} data · Dicetak ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`;
+    const n = document.querySelectorAll('#card-grid .card').length;
+    const sub = (q ? `${n} data (filter: "${q}")` : `${n} data`) +
+      ` · Dicetak ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`;
     document.getElementById('ph-sub').textContent = sub;
     window.print();
   }
 
-  // Tambahkan fungsi baru ini di bawah filterCards masbro!
+  // ── Refresh ──
   function manualRefresh() {
-    // Bersihkan kolom pencarian saat tombol refresh diklik
     document.getElementById('search-d').value = '';
     document.getElementById('search-m').value = '';
-    
-    // Muat ulang data terbaru dari Google Sheets
     loadData(false);
-    
-    // Aktifkan dan reset kembali hitungan mundur auto-refresh dari awal
-    if (REFRESH && REFRESH > 0) {
-      startRefresh();
-    }
+    if (REFRESH > 0) startRefresh();
   }
 
-  // Auto-refresh
   function startRefresh() {
     if (!REFRESH||REFRESH<=0) return;
     const bar = document.getElementById('refresh-bar');
     const label = document.getElementById('refresh-label');
     const pb = document.getElementById('progress-bar');
     bar.classList.remove('hidden');
-
-    function tick() {
+    clearInterval(refreshTimer);
+    refreshCountdown = REFRESH;
+    pb.style.transitionDuration = '0s';
+    pb.style.width = '0%';
+    refreshTimer = setInterval(() => {
       refreshCountdown--;
-      const pct = ((REFRESH - refreshCountdown) / REFRESH) * 100;
-      pb.style.width = pct + '%';
       pb.style.transitionDuration = '1s';
-
-      const mins = Math.floor(refreshCountdown/60);
-      const secs = refreshCountdown % 60;
-      label.textContent = `Auto-refresh dalam ${mins>0?mins+'m ':''} ${secs}d`;
-
-      if (refreshCountdown <= 0) {
-        loadData(false);
-        resetRefreshTimer();
-      }
-    }
-
-    resetRefreshTimer();
-    function resetRefreshTimer() {
-      clearInterval(refreshTimer);
-      refreshCountdown = REFRESH;
-      pb.style.transitionDuration = '0s';
-      pb.style.width = '0%';
-      refreshTimer = setInterval(tick, 1000);
-    }
-    window.resetRefreshTimer = resetRefreshTimer;
+      pb.style.width = ((REFRESH-refreshCountdown)/REFRESH*100) + '%';
+      const m = Math.floor(refreshCountdown/60), s = refreshCountdown%60;
+      label.textContent = `Auto-refresh dalam ${m>0?m+'m ':''} ${s}d`;
+      if (refreshCountdown<=0) { loadData(false); clearInterval(refreshTimer); startRefresh(); }
+    }, 1000);
   }
 
-  window.onload = function() {
-    loadData();
-    startRefresh();
-  };
+  window.onload = function() { loadData(); startRefresh(); };
 </script>
 </body>
 </html>
