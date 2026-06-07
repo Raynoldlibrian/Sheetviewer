@@ -107,8 +107,8 @@
 
     /* ── Desktop modal override — centered dialog ── */
     @media(min-width:700px) {
-      .modal { bottom:auto; top:50%; left:50%; right:auto; transform:translate(-50%,-40%); width:480px; max-height:80vh; border-radius:var(--radius-lg); box-shadow:0 20px 60px rgba(26,39,68,.2); }
-      .modal.open { transform:translate(-50%,-50%); }
+      .modal { bottom:auto; top:50%; left:50%; right:auto; transform:translate(-50%,-40%); width:480px; max-height:80vh; border-radius:var(--radius-lg); box-shadow:0 20px 60px rgba(26,39,68,.2); visibility:hidden; }
+      .modal.open { transform:translate(-50%,-50%); visibility:visible; }
       .modal-handle { display:none; }
     }
 
@@ -370,27 +370,30 @@
 
   // ── Modal ──
   function openModal(no, encodedTitle, encodedRow) {
-    const title = decodeURIComponent(encodedTitle);
-    const row = JSON.parse(decodeURIComponent(encodedRow));
-    document.getElementById('modal-no').textContent = `Detail · #${no}`;
-    document.getElementById('modal-title').textContent = title;
+    try {
+      const title = decodeURIComponent(encodedTitle);
+      const row = JSON.parse(decodeURIComponent(encodedRow));
+      document.getElementById('modal-no').textContent = `Detail · #${no}`;
+      document.getElementById('modal-title').textContent = title;
 
-    // Tampilkan SEMUA kolom (bukan hanya visibleCols) di modal
-    let bodyHtml = '';
-    headers.forEach((h, i) => {
-      const raw = row[i]!==undefined ? String(row[i]).trim() : '';
-      if (!raw) return;
-      const isDate = isDateLike(i, raw);
-      bodyHtml += `<div class="modal-row">
-        <div class="modal-label">${h||'Kolom '+(i+1)}</div>
-        <div class="modal-value ${isDate?'date-val':''}">${isDate?formatDate(raw):raw}</div>
-      </div>`;
-    });
-    document.getElementById('modal-body').innerHTML = bodyHtml || '<p style="color:var(--muted);font-size:13px">Tidak ada data.</p>';
+      let bodyHtml = '';
+      headers.forEach((h, i) => {
+        const raw = row[i]!==undefined ? String(row[i]).trim() : '';
+        if (!raw) return;
+        const isDate = isDateLike(i, raw);
+        bodyHtml += `<div class="modal-row">
+          <div class="modal-label">${h||'Kolom '+(i+1)}</div>
+          <div class="modal-value ${isDate?'date-val':''}">${isDate?formatDate(raw):raw}</div>
+        </div>`;
+      });
+      document.getElementById('modal-body').innerHTML = bodyHtml || '<p style="color:var(--muted);font-size:13px">Tidak ada data.</p>';
 
-    document.getElementById('modal-backdrop').classList.add('open');
-    document.getElementById('modal').classList.add('open');
-    document.body.style.overflow = 'hidden';
+      document.getElementById('modal-backdrop').classList.add('open');
+      document.getElementById('modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    } catch(e) {
+      console.error('Modal error:', e);
+    }
   }
 
   function closeModal() {
