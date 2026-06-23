@@ -47,10 +47,18 @@
 
     /* ── Mobile search bar ── */
     .mobile-search { display:none; background:var(--navy2); padding:8px 1rem; }
-    .mobile-search .search-wrap { max-width:100%; margin:0; }
+    .mobile-search .search-wrap { max-width:100% !important; margin:0 !important; display:flex !important; }
     .mobile-search .search-wrap i { color:rgba(255,255,255,.4); }
     .mobile-search .search-input { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.15); color:#fff; font-size:14px; padding:9px 12px 9px 34px; }
     .mobile-search .search-input::placeholder { color:rgba(255,255,255,.35); }
+
+    /* ── Image preview in modal ── */
+    .modal-img-wrap { margin-top:8px; border-radius:var(--radius); overflow:hidden; background:var(--surface2); border:1px solid var(--border); }
+    .modal-img { width:100%; max-height:300px; object-fit:contain; display:block; cursor:zoom-in; }
+    .modal-img-loading { padding:2rem; text-align:center; color:var(--muted); font-size:13px; }
+    .modal-img-error { padding:1rem; text-align:center; }
+    .modal-img-error a { color:var(--navy3); font-size:13px; word-break:break-all; }
+    .modal-value a { color:var(--navy3); word-break:break-all; font-size:13px; }
 
     /* ── Main ── */
     .main { padding:1.25rem 1rem 3rem; max-width:1280px; margin:0 auto; }
@@ -368,6 +376,42 @@
     }).join('');
   }
 
+  // ── Helpers: detect & convert Drive/image links ──
+  function isDriveLink(val) {
+    return /drive\.google\.com\/(open\?id=|file\/d\/|uc\?)/i.test(val);
+  }
+  function isImageLink(val) {
+    return /\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i.test(val) || isDriveLink(val);
+  }
+  function driveToDirectImg(url) {
+    // Ekstrak file ID dari berbagai format Drive URL
+    let id = null;
+    const m1 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    const m2 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (m1) id = m1[1];
+    else if (m2) id = m2[1];
+    return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w600` : url;
+  }
+  function renderModalValue(h, raw) {
+    const isDate = isDateLike(headers.indexOf(h), raw);
+    if (isDate) return `<div class="modal-value date-val">${formatDate(raw)}</div>`;
+    if (isImageLink(raw)) {
+      const imgSrc = isDriveLink(raw) ? driveToDirectImg(raw) : raw;
+      return `<div class="modal-value">
+        <div class="modal-img-wrap">
+          <img class="modal-img" src="${imgSrc}" alt="${h}"
+            onerror="this.closest('.modal-img-wrap').innerHTML='<div class=\\'modal-img-error\\'><i class=\\'ti ti-photo-off\\'></i><br><a href=\\'${raw}\\' target=\\'_blank\\'>Buka file di Drive</a></div>'"
+            onclick="window.open('${raw}','_blank')" />
+        </div>
+      </div>`;
+    }
+    // Cek apakah link biasa
+    if (/^https?:\/\//i.test(raw)) {
+      return `<div class="modal-value"><a href="${raw}" target="_blank">${raw}</a></div>`;
+    }
+    return `<div class="modal-value">${raw}</div>`;
+  }
+
   // ── Modal ──
   function openModal(no, encodedTitle, encodedRow) {
     try {
@@ -380,10 +424,9 @@
       headers.forEach((h, i) => {
         const raw = row[i]!==undefined ? String(row[i]).trim() : '';
         if (!raw) return;
-        const isDate = isDateLike(i, raw);
         bodyHtml += `<div class="modal-row">
           <div class="modal-label">${h||'Kolom '+(i+1)}</div>
-          <div class="modal-value ${isDate?'date-val':''}">${isDate?formatDate(raw):raw}</div>
+          ${renderModalValue(h, raw)}
         </div>`;
       });
       document.getElementById('modal-body').innerHTML = bodyHtml || '<p style="color:var(--muted);font-size:13px">Tidak ada data.</p>';
